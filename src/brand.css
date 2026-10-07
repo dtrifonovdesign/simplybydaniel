@@ -1,0 +1,242 @@
+/* Simply: brand tokens, base styles, components and motion.
+   Source of truth for the rules: ../BRAND.md */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,100..900,0..100,0..1&family=Bricolage+Grotesque:wght@500;600;700&family=Figtree:wght@400;500;600&display=swap");
+
+:root {
+  /* Color */
+  --cream: #F4EEE3;
+  --sand: #EBE3D3;
+  --ink: #1A1816;
+  --ink-soft: #3D3832;
+  --stone: #5C554B;
+  --brass: #B8935A;
+
+  /* Semantic color */
+  --bg: var(--cream);
+  --surface: var(--sand);
+  --text: var(--ink);
+  --text-body: var(--ink-soft);
+  --text-muted: var(--stone);
+  --accent: var(--brass);
+  --line: rgba(26, 24, 22, 0.12);
+
+  /* Fonts */
+  --font-wordmark: "Fraunces", Georgia, serif;
+  --font-heading: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+
+  /* Type scale */
+  --fs-display: clamp(2.75rem, 1.5rem + 5vw, 5.5rem);
+  --fs-h1: clamp(2.25rem, 1.25rem + 3.5vw, 4rem);
+  --fs-h2: clamp(1.75rem, 1.1rem + 2vw, 2.75rem);
+  --fs-h3: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  --fs-h4: 1.25rem;
+  --fs-lead: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-xs: 0.75rem;
+
+  /* Spacing (8px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Shape: soft corners everywhere */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --max-width: 1200px;
+  --gutter: clamp(20px, 5vw, 56px);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 200ms;
+  --dur-base: 400ms;
+  --dur-slow: 700ms;
+  --dur-hero: 1000ms;
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--text-body);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--text);
+}
+h1 { font-size: var(--fs-h1); line-height: 1.05; letter-spacing: -0.035em; }
+h2 { font-size: var(--fs-h2); line-height: 1.1; letter-spacing: -0.03em; }
+h3 { font-size: var(--fs-h3); line-height: 1.15; letter-spacing: -0.02em; }
+h4 { font-size: var(--fs-h4); line-height: 1.2; letter-spacing: -0.01em; }
+.display { font-size: var(--fs-display); line-height: 1.02; letter-spacing: -0.04em; }
+
+p { margin: 0; }
+.lead { font-size: var(--fs-lead); line-height: 1.6; }
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+a { color: inherit; text-underline-offset: 3px; }
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Dark section */
+.theme-ink {
+  --bg: var(--ink);
+  --text: var(--cream);
+  --text-body: rgba(244, 238, 227, 0.78);
+  --text-muted: rgba(244, 238, 227, 0.6);
+  --line: rgba(244, 238, 227, 0.16);
+  --logo-top: var(--cream);
+  background: var(--ink);
+  color: var(--cream);
+}
+.theme-ink :focus-visible { outline-color: var(--cream); }
+
+/* Logo lockup: mark is 1em square, gap is 0.2em. Set size with --logo-size. */
+.logo-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  font-size: var(--logo-size, 28px);
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1;
+}
+.logo-lockup svg { width: 1em; height: 1em; flex: none; overflow: visible; }
+.logo-lockup .mark-top { fill: var(--logo-top, var(--ink)); }
+.logo-lockup .mark-bottom { fill: var(--logo-bottom, var(--brass)); }
+.wordmark {
+  font-family: var(--font-wordmark);
+  font-weight: 600;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 0;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 12px 22px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn--primary { background: var(--ink); color: var(--cream); }
+.btn--primary:hover { background: var(--ink-soft); }
+.btn--secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn--secondary:hover { background: var(--ink); color: var(--cream); }
+.btn--accent { background: var(--brass); color: var(--ink); }
+.theme-ink .btn--primary { background: var(--cream); color: var(--ink); }
+.theme-ink .btn--primary:hover { background: var(--sand); }
+.theme-ink .btn--secondary { color: var(--cream); border-color: var(--cream); }
+.theme-ink .btn--secondary:hover { background: var(--cream); color: var(--ink); }
+
+/* Cards */
+.card {
+  background: var(--sand);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+.card__stage {
+  background: var(--cream);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+
+/* Motion: scroll reveal. Add .reveal; JS adds .is-visible when in view. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--dur-slow) var(--ease-out),
+              transform var(--dur-slow) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Motion: signature logo reveal. Add .logo-reveal to the lockup. */
+@keyframes mark-top-in {
+  from { opacity: 0; transform: translate(24px, -16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes mark-bottom-in {
+  from { opacity: 0; transform: translate(-24px, 16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes wordmark-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.logo-reveal .mark-top,
+.logo-reveal .mark-bottom { transform-box: fill-box; transform-origin: center; }
+.logo-reveal .mark-top    { animation: mark-top-in var(--dur-hero) var(--ease-out) both; }
+.logo-reveal .mark-bottom { animation: mark-bottom-in var(--dur-hero) var(--ease-out) 100ms both; }
+.logo-reveal .wordmark    { animation: wordmark-in var(--dur-slow) var(--ease-out) 500ms both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}

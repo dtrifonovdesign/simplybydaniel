@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Simply | Brands made simple</title>
+  <meta name="description" content="Simply is a brand design practice by Daniel. Logos, brand kits and websites, designed by hand and finished with care." />
+  <meta name="theme-color" content="#F4EEE3" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta property="og:title" content="Simply | Brands made simple" />
+  <meta property="og:description" content="Logos, brand kits and websites, designed by hand and finished with care." />
+  <style>
+    /* Critical styles so nothing flashes oversized before the stylesheet loads */
+    html, body { margin: 0; background: #F4EEE3; }
+    html:not(.ready) main, html:not(.ready) footer, html:not(.ready) .nav { visibility: hidden; }
+    .loader { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #F4EEE3; overflow: hidden; }
+    .loader__lockup { display: none; }
+    .loader.is-go .loader__lockup { display: inline-flex; }
+    .logo-lockup { display: inline-flex; align-items: center; gap: .2em; line-height: 1; font-size: var(--logo-size, 28px); text-decoration: none; color: #1A1816; }
+    .logo-lockup svg { width: 1em; height: 1em; flex: none; overflow: visible; }
+    .mark-top { fill: #1A1816; } .mark-bottom { fill: #B8935A; }
+    #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <!-- Intro -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__lockup logo-lockup logo-reveal" style="--logo-size: clamp(60px, 9vw, 104px)">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <path class="mark-top" d="M48 10H75A5 5 0 0 1 80 15V41A5 5 0 0 1 75 46H48A18 18 0 0 1 48 10Z" />
+        <path class="mark-bottom" d="M52 54H25A5 5 0 0 0 20 59V85A5 5 0 0 0 25 90H52A18 18 0 0 0 52 54Z" />
+      </svg>
+      <span class="wordmark">Simply</span>
+    </div>
+  </div>
+
+  <canvas id="stage" aria-hidden="true"></canvas>
+
+  <nav class="trail" id="trail" aria-label="Process progress">
+    <ol></ol>
+  </nav>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="logo-lockup" href="#top" aria-label="Simply home" style="--logo-size: 28px">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <path class="mark-top" d="M48 10H75A5 5 0 0 1 80 15V41A5 5 0 0 1 75 46H48A18 18 0 0 1 48 10Z" />
+          <path class="mark-bottom" d="M52 54H25A5 5 0 0 0 20 59V85A5 5 0 0 0 25 90H52A18 18 0 0 0 52 54Z" />
+        </svg>
+        <span class="wordmark">Simply</span>
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="#process">Process</a>
+        <a href="#case-studies">Case studies</a>
+        <a href="#about">About</a>
+        <a class="btn btn--primary" href="#contact">Start a project</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero" data-pose="hero">
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow reveal" data-intro>Brand design by <span class="who">Daniel</span></p>
+          <h1 class="display reveal" style="--i:1" data-intro>Brands made simple.</h1>
+          <p class="lead reveal" style="--i:2" data-intro>Logos, brand kits and websites, designed by hand and finished with care.</p>
+          <div class="hero__cta reveal" style="--i:3" data-intro>
+            <a class="btn btn--primary" href="#process">See the process</a>
+            <a class="btn btn--secondary" href="#contact">Start a project</a>
+          </div>
+        </div>
+        <div class="scroll-cue reveal" style="--i:5" data-intro aria-hidden="true"><span>Scroll</span><i></i></div>
+      </div>
+    </section>
+
+    <!-- Statement -->
+    <section class="statement" data-pose="split">
+      <div class="container">
+        <h2 class="display reveal">Brands, built simply.</h2>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section class="process" id="process">
+      <div class="path-pin" id="path-pin"><div class="path-stage">
+      <div class="container process__head">
+        <p class="eyebrow reveal">Process</p>
+        <h2 class="reveal" style="--i:1">Made by hand, then finished with care.</h2>
+        <p class="lead reveal" style="--i:2">Six steps, one path. Follow it, or jump to any stop.</p>
+        <div class="path reveal" style="--i:3" id="path">
+          <svg viewBox="0 0 900 170" role="group" aria-label="The six steps of the process">
+            <path class="path__line" d="M24 110 C 120 20, 210 150, 320 92 S 500 20, 580 88 S 760 150, 876 56" />
+          </svg>
+        </div>
+      </div></div></div>
+
+      <article class="step" data-pose="p1">
+        <div class="container"><div class="step__body">
+          <p class="eyebrow reveal">01 · Words</p>
+          <h3 class="reveal" style="--i:1">It starts with words.</h3>
+          <p class="reveal" style="--i:2">Before any shape, I ask what the company should feel like. A handful of honest words become the brief every later decision is checked against.</p>
+          <div class="chips reveal" style="--i:3">
+            <span>Calm</span><span>Crafted</span><span>Trustworthy</span><span>Warm</span><span>Premium</span><span>Clear</span>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" data-pose="p2" style="--step-h: 240vh">
+        <div class="container"><div class="step__body">
+          <p class="eyebrow reveal">02 · Research</p>
+          <h3 class="reveal" style="--i:1">Then I look around.</h3>
+          <p class="reveal" style="--i:2">I study brands with a similar feel. What they do well, what feels borrowed, and where there is room to be different.</p>
+          <p class="refs__label reveal" style="--i:3">Three brands with a similar feel</p>
+          <div class="refs reveal" style="--i:4">
+            <figure class="brand-card">
+              <div class="brand-card__logo"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16" fill="var(--brass)"/><circle cx="24" cy="24" r="7" fill="var(--ink)"/></svg></div>
+              <b>Fieldnote</b>
+              <span class="brand-card__tag">Warm · handmade</span>
+              <div class="brand-card__dots"><i style="background:#E8D9BD"></i><i style="background:#B8935A"></i><i style="background:#5C554B"></i></div>
+              <figcaption>Loves: the quiet palette</figcaption>
+            </figure>
+            <figure class="brand-card">
+              <div class="brand-card__logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38V22a14 14 0 0 1 28 0v16Z" fill="var(--cream)"/><rect x="19" y="26" width="10" height="12" rx="5" fill="var(--ink)"/></svg></div>
+              <b>Oak &amp; Rye</b>
+              <span class="brand-card__tag">Calm · established</span>
+              <div class="brand-card__dots"><i style="background:#F4EEE3"></i><i style="background:#3D3832"></i><i style="background:#B8935A"></i></div>
+              <figcaption>Loves: the soft arch</figcaption>
+            </figure>
+            <figure class="brand-card">
+              <div class="brand-card__logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38C10 20 20 10 38 10c0 18-10 28-28 28Z" fill="var(--brass)"/><path d="M10 38 30 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg></div>
+              <b>Lumen</b>
+              <span class="brand-card__tag">Clear · modern</span>
+              <div class="brand-card__dots"><i style="background:#EBE3D3"></i><i style="background:#1A1816"></i><i style="background:#B8935A"></i></div>
+              <figcaption>Loves: one clear shape</figcaption>
+            </figure>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" data-pose="p3" style="--step-h: 380vh">
+        <div class="container"><div class="step__body">
+          <p class="eyebrow reveal">03 · Sketch</p>
+          <h3 class="reveal" style="--i:1">Paper comes first.</h3>
+          <p class="reveal" style="--i:2">Logos get drawn by hand, dozens of them. The best ideas are usually the simplest ones, and they show up on paper before they show up on a screen.</p>
+          <div class="chips reveal" style="--i:3"><span>Rough shapes</span><span>Two halves</span><span>The gap decided</span><span>Soft corners</span></div>
+        </div></div>
+      </article>
+
+      <article class="step" data-pose="p4" style="--step-h: 300vh">
+        <div class="container"><div class="step__body">
+          <p class="eyebrow reveal">04 · Digital design</p>
+          <h3 class="reveal" style="--i:1">Then it gets precise.</h3>
+          <p class="reveal" style="--i:2">The strongest sketches are rebuilt on screen with exact geometry. Curves, gaps and corners are drawn on purpose, not by accident.</p>
+          <div class="chips reveal" style="--i:3"><span>Exact curves</span><span>8-unit gap</span><span>Soft corners</span><span>Anchor points</span></div>
+        </div></div>
+      </article>
+
+      <article class="step" data-pose="p5" style="--step-h: 300vh">
+        <div class="container"><div class="step__body">
+          <p class="eyebrow reveal">05 · Finish</p>
+          <h3 class="reveal" style="--i:1">Then I finish the files.</h3>
+          <p class="reveal" style="--i:2">The final marks get cleaned up and exported in every format a brand needs: color, reversed, one-color and app icon.</p>
+          <div class="chips chips--files reveal" style="--i:3">
+            <span>mark.svg</span><span>mark-reversed.svg</span><span>mono-ink.svg</span><span>app-icon.svg</span><span>favicon.ico</span><span>logo@2x.png</span><span>brand-kit.pdf</span>
+          </div>
+        </div></div>
+      </article>
+
+      <article class="step" data-pose="p6" style="--step-h: 200vh">
+        <div class="container"><div class="step__body">
+          <p class="eyebrow reveal">06 · System</p>
+          <h3 class="reveal" style="--i:1">Then it becomes a brand.</h3>
+          <p class="reveal" style="--i:2">Colors, typefaces and one clear message. A tagline only if the brand needs one.</p>
+          <div class="system reveal" style="--i:3">
+            <div class="swatches"><i style="background:#F4EEE3"></i><i style="background:#EBE3D3"></i><i style="background:#B8935A"></i><i style="background:#3D3832"></i></div>
+            <p class="aa">Aa <small>Bricolage · Figtree</small></p>
+          </div>
+        </div></div>
+      </article>
+    </section>
+
+    <!-- Case studies -->
+    <section class="cases section" id="case-studies" data-pose="cases">
+      <div class="container">
+        <div class="half">
+          <p class="eyebrow reveal">Case studies</p>
+          <h2 class="reveal" style="--i:1">The first projects are on their way.</h2>
+          <p class="lead reveal" style="--i:2">Each one will get its own page, with the sketches, the decisions and a closer look at how it was built.</p>
+          <ul class="case-list">
+            <li class="card reveal" style="--i:3"><span class="eyebrow">Case study 01</span><b>Coming soon</b></li>
+            <li class="card reveal" style="--i:4"><span class="eyebrow">Case study 02</span><b>Coming soon</b></li>
+            <li class="card reveal" style="--i:5"><span class="eyebrow">Case study 03</span><b>Coming soon</b></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about section" id="about" data-pose="about">
+      <div class="container about__grid">
+        <div class="about__photos about__figure" id="about-figure" role="img" aria-label="Daniel sitting on top of the Simply mark, smiling"></div>
+        <div class="about__copy">
+          <p class="eyebrow reveal">About</p>
+          <h2 class="reveal" style="--i:1">Hi, I'm Daniel.</h2>
+          <p class="lead reveal" style="--i:2">I'm a brand designer who builds identities by hand first and by machine second.</p>
+          <p class="reveal" style="--i:3">I care about the quiet details: a curve drawn on purpose, a gap that earns its place, a color used once instead of everywhere. Every brand I make starts as words and pencil sketches, and it gets rebuilt carefully before it gets finished.</p>
+          <p class="reveal" style="--i:4">You can see the whole process above. It is the same every time: words first, then paper, then precise geometry.</p>
+          <ul class="points reveal" style="--i:5">
+            <li><b>By hand first.</b> Paper before pixels.</li>
+            <li><b>Words before shapes.</b> The brief comes from you.</li>
+            <li><b>One clear idea.</b> Then I stop.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact" data-pose="contact">
+      <div class="container"><div class="contact__inner">
+        <p class="eyebrow reveal">Contact</p>
+        <h2 class="display reveal" style="--i:1">Let's make something simple.</h2>
+        <p class="lead reveal" style="--i:2">Tell me about your company and the words you want it to stand for.</p>
+        <form class="form reveal" style="--i:3" id="contact-form" novalidate data-endpoint="" data-email="hello@simplybydaniel.com">
+          <label class="field">
+            <span>Your email</span>
+            <input type="email" name="email" autocomplete="email" placeholder="you@company.com" required />
+          </label>
+          <label class="field">
+            <span>What are you making?</span>
+            <textarea name="message" rows="3" placeholder="A few words about your company" required></textarea>
+          </label>
+          <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button class="btn btn--primary" type="submit">Send</button>
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </form>
+      </div></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a class="logo-lockup" href="#top" aria-label="Simply home" style="--logo-size: 24px">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <path class="mark-top" d="M48 10H75A5 5 0 0 1 80 15V41A5 5 0 0 1 75 46H48A18 18 0 0 1 48 10Z" />
+          <path class="mark-bottom" d="M52 54H25A5 5 0 0 0 20 59V85A5 5 0 0 0 25 90H52A18 18 0 0 0 52 54Z" />
+        </svg>
+        <span class="wordmark">Simply</span>
+      </a>
+      <p class="small">© 2026 Simply by Daniel</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
