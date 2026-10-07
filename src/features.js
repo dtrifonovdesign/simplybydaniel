@@ -59,8 +59,11 @@ function initBrandFly(reduced) {
   document.body.append(fly, meta);
   const lock = fly.querySelector('.logo-lockup');
 
-  let w0 = 0, h0 = 0;
-  const measure = () => { w0 = fly.offsetWidth; h0 = fly.offsetHeight; };
+  // w0/h0 are the lockup's size at the base 28px. The lockup scales with --logo-size, so a re-measure
+  // (phone browser bars trigger resize events mid-scroll) has to undo the current size first, or the
+  // wordmark is centred on a width that is too big and slides left off the screen.
+  let w0 = 0, h0 = 0, curFs = 28;
+  const measure = () => { w0 = (fly.offsetWidth * 28) / curFs; h0 = (fly.offsetHeight * 28) / curFs; };
   measure();
   window.addEventListener('resize', measure);
   if (document.fonts) document.fonts.ready.then(measure);
@@ -91,6 +94,7 @@ function initBrandFly(reduced) {
       const cx = x0 + (tx - x0) * k, cy = y0 + (ty - y0) * k;
       fly.style.opacity = 1;
       lock.style.setProperty('--logo-size', fs.toFixed(2) + 'px');
+      curFs = fs;
       fly.style.transform = 'translate(' + (cx - (w0 * s) / 2).toFixed(2) + 'px,' + (cy - (h0 * s) / 2).toFixed(2) + 'px)';
       const a = smooth(0.8, 1, k);
       meta.style.opacity = a;
