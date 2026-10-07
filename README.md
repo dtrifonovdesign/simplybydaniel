@@ -11,7 +11,7 @@ Portfolio site for Simply (brand design by Daniel). Vite + Three.js + GSAP + Len
 - `src/scene.js`  the Three.js scene (extruded mark built from the BRAND.md geometry).
 - `src/main.js`   intro, smooth scroll, reveals, pointer effects.
 - `public/images/daniel-1.jpg`, `daniel-2.jpg`  drop your photos here; the placeholders disappear automatically.
-- Contact form sends through FormSubmit to `dtrifonovmn@gmail.com` (set in index.html).
+- Contact form sends through FormSubmit using a random alias (set in index.html), so the real email address is not in the page source.
 
 ## Mobile vs desktop
 Under 860px: native scroll, no cursor effects, lower-poly mark, lower pixel ratio, mark fades behind text.
@@ -19,7 +19,7 @@ Fine pointer + wide screen: Lenis smooth scroll, cursor tilt, scroll-velocity sp
 `prefers-reduced-motion`: no intro, no spin or idle motion.
 
 ## Contact form
-`#contact-form` in index.html has `data-endpoint="https://formsubmit.co/ajax/<email>"`, so submissions are POSTed as JSON to FormSubmit and emailed to that address. The first submission triggers an activation email that must be confirmed once. If `data-endpoint` is emptied, the form falls back to opening the visitor's email app (mailto).
+`#contact-form` in index.html has `data-endpoint="https://formsubmit.co/ajax/<alias>"`, so submissions are POSTed as JSON to FormSubmit and forwarded to the inbox the alias belongs to. Add a `data-email` attribute and empty `data-endpoint` to use the visitor's email app instead.
 
 ## Performance and quality tiers
 

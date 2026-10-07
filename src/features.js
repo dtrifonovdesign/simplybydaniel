@@ -323,6 +323,8 @@ function initForm(getStage) {
           }),
         });
         if (!res.ok) throw new Error('bad response');
+      } else if (!form.dataset.email) {
+        throw new Error('no endpoint');
       } else {
         const body = `${msg.value.trim()}\n\nReply to: ${email.value.trim()}`;
         location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('New project')}&body=${encodeURIComponent(body)}`;
@@ -333,7 +335,7 @@ function initForm(getStage) {
       st?.setForm(0);
       st?.celebrate();
     } catch (err) {
-      status.textContent = `Something went wrong. Please email ${form.dataset.email} instead.`;
+      status.textContent = 'Something went wrong. Please try again in a moment.';
     }
   });
 }
