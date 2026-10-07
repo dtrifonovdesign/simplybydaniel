@@ -1,21 +1,43 @@
 // Process path, sticky trail and contact form. Receives the shared pieces from main.js.
+import { scroll } from './scroll.js';
+
 export const STEPS = ['Words', 'Research', 'Sketch', 'Digital design', 'Finish', 'System'];
 
 const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 const easeIO = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-export function initFeatures({ lenis, reduced, getStage }) {
+// Where the tall sections sit in the document. Measured when the layout changes, not every frame,
+// so the per-frame work is plain arithmetic against the shared scroll value.
+const geo = { pinTop: 0, pinH: 1, p6Top: 0, p6H: 1 };
+
+export function initFeatures({ getLenis, reduced, getStage }) {
   const stepEls = [...document.querySelectorAll('.step')];
   const scrollToEl = (el) => {
+    const lenis = getLenis();
     if (lenis) lenis.scrollTo(el, { duration: 1.6 });
     else el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
   };
   const path = initPath(scrollToEl, stepEls, reduced);
-  initTrail(scrollToEl, stepEls, lenis);
+  initTrail(scrollToEl, stepEls);
   initForm(getStage);
   const brand = initBrandFly(reduced);
-  return { travel: () => (path ? path.update() : null), sync: (tw) => path && path.sync(tw), fly: () => { if (brand) brand.update(); stepProgress(); } };
+  buildStepLists();
+  const measure = () => {
+    const y = window.scrollY;
+    const pin = document.getElementById('path-pin');
+    if (pin) { const r = pin.getBoundingClientRect(); geo.pinTop = r.top + y; geo.pinH = r.height; }
+    const p6 = document.querySelector('.step[data-pose="p6"]');
+    if (p6) { const r = p6.getBoundingClientRect(); geo.p6Top = r.top + y; geo.p6H = r.height; }
+    for (const s of stepLists) { const r = s.step.getBoundingClientRect(); s.top = r.top + y; s.h = r.height; }
+  };
+  measure();
+  return {
+    measure,
+    travel: () => (path ? path.update() : null),
+    sync: (tw) => path && path.sync(tw),
+    fly: (now) => { if (brand) brand.update(); stepProgress(now); },
+  };
 }
 
 // "Then it becomes a brand": the Simply lockup leaves the top-left corner, flies down
@@ -33,7 +55,7 @@ function initBrandFly(reduced) {
   const meta = document.createElement('div');
   meta.className = 'brand-fly__meta';
   meta.setAttribute('aria-hidden', 'true');
-  meta.innerHTML = '<p>Brands made simple.</p>';
+  meta.innerHTML = '<p>Brands, made simply.</p>';
   document.body.append(fly, meta);
   const lock = fly.querySelector('.logo-lockup');
 
@@ -47,9 +69,12 @@ function initBrandFly(reduced) {
     update() {
       if (!w0) measure();
       const vh = window.innerHeight, vw = window.innerWidth;
-      const r = step.getBoundingClientRect();
-      const d = Math.abs(r.top + r.height / 2 - vh / 2) / vh;
-      const k = easeIO(1 - smooth(0.25, 1.1, d));
+      // u = how far into the step we've scrolled, in screens. The wordmark waits until the file
+      // tiles and parting halves have cleared its landing spot, then stays for the whole hold
+      // (colors finishing, then a pause on the finished brand) and only leaves as the step lets go.
+      const u = (scroll.ys - geo.p6Top) / vh;
+      const hold = (geo.p6H - vh) / vh;
+      const k = Math.min(easeIO(smooth(0.3, 0.8, u)), 1 - easeIO(smooth(hold, hold + 0.7, u)));
       if (k < 0.003) {
         fly.style.opacity = 0; meta.style.opacity = 0;
         navEl.classList.remove('is-flown');
@@ -82,6 +107,17 @@ function initPath(scrollToEl, stepEls, reduced) {
   if (!wrap) return null;
   const svg = wrap.querySelector('svg');
   const base = svg.querySelector('.path__line');
+  // On phones the path runs top to bottom, so it can be big enough to read instead of a tiny strip.
+  // Desktop windows stay horizontal even when narrow; only touch devices (or truly tiny windows) go vertical.
+  const mq = window.matchMedia('(max-width: 859px) and (pointer: coarse), (max-width: 599px)');
+  const vertical = mq.matches;
+  let flipTimer = 0;
+  mq.addEventListener?.('change', () => { clearTimeout(flipTimer); flipTimer = setTimeout(() => location.reload(), 400); });
+  if (vertical) {
+    svg.setAttribute('viewBox', '0 0 320 380');
+    base.setAttribute('d', 'M64 22 C 230 40, 262 96, 168 132 S 56 206, 160 240 S 262 306, 96 358');
+    wrap.classList.add('path--vertical');
+  }
   const len = base.getTotalLength();
   const NSV = 'http://www.w3.org/2000/svg';
   const el = (name, attrs = {}, parent = svg) => {
@@ -101,7 +137,17 @@ function initPath(scrollToEl, stepEls, reduced) {
     el('circle', { cx: pt.x, cy: pt.y, r: 15 }, g);
     const n = el('text', { class: 'n', x: pt.x, y: pt.y }, g); n.textContent = i + 1;
     const above = i % 2 === 0;
-    const l = el('text', { class: 'l', x: pt.x, y: pt.y + (above ? -26 : 38) }, g); l.textContent = label;
+    let l;
+    if (vertical) {
+      // labels sit beside the node, on whichever side has room
+      const right = pt.x < 160;
+      l = el('text', { class: 'l', x: pt.x + (right ? 28 : -28), y: pt.y }, g);
+      l.style.textAnchor = right ? 'start' : 'end';
+      l.style.dominantBaseline = 'central';
+    } else {
+      l = el('text', { class: 'l', x: pt.x, y: pt.y + (above ? -26 : 38) }, g);
+    }
+    l.textContent = label;
     const go = () => scrollToEl(stepEls[i]);
     g.addEventListener('click', go);
     g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
@@ -149,24 +195,25 @@ function initPath(scrollToEl, stepEls, reduced) {
     update() {
       if (reduced || document.body.classList.contains('is-loading')) return null;
       const vh = window.innerHeight;
-      const sr = svg.getBoundingClientRect();
       // The page holds still (pinned) while q runs from 0 to 1, so the walk follows your scroll.
-      const pr = pin.getBoundingClientRect();
-      const qRaw = clamp(-pr.top / Math.max(1, pr.height - vh));
-      // ease toward the scroll position so wheel steps never make the walk jump
+      // q comes from the shared smoothed scroll; the pin's on-screen edges come from the real position.
+      const prTop = geo.pinTop - scroll.y, prBottom = prTop + geo.pinH;
+      const qRaw = clamp((scroll.ys - geo.pinTop) / Math.max(1, geo.pinH - vh));
+      // Ease toward the scroll position, with a speed limit: even a huge wheel flick walks the little
+      // mark past every stop instead of jumping over them (the whole path takes about 1.7s at the fastest).
       const now = performance.now();
-      const dt = Math.min(0.05, Math.max(0.001, (now - lastT) / 1000));
+      const dt = Math.min(0.1, Math.max(0.001, (now - lastT) / 1000));
       lastT = now;
-      const offscreen = pr.bottom < vh * 0.15 || pr.top > vh * 0.95;
+      const offscreen = prBottom < vh * 0.15 || prTop > vh * 0.95;
       if (offscreen) qs = qRaw;
-      else qs += (qRaw - qs) * (1 - Math.exp(-dt * 11));
+      else qs += clamp((qRaw - qs) * (1 - Math.exp(-dt * 11)), -dt * 0.6, dt * 0.6);
       if (Math.abs(qRaw - qs) < 0.0004) qs = qRaw;
       const q = qs;
       const f = q <= A ? 0 : q >= B ? 1 : (q - A) / (B - A);
       place(q <= 0 ? 0 : f);
       const sixNode = nodes[nodes.length - 1];
       // After the pin lets go, keep the halves flanking the (scrolling) heading until it has moved off.
-      const rel = clamp((pr.bottom < vh ? (vh - pr.bottom) : 0) / (vh * 0.7));
+      const rel = clamp((prBottom < vh ? (vh - prBottom) : 0) / (vh * 0.7));
       if (q <= 0) { sixNode.classList.remove('is-covered'); return null; }
       if (q >= 1) {
         sixNode.classList.remove('is-covered');
@@ -177,9 +224,12 @@ function initPath(scrollToEl, stepEls, reduced) {
       // Hide the 6 while the little mark sits on top of it.
       sixNode.classList.toggle('is-covered', f >= 0.97 && tw > 0.25);
       orient(f, dt, smooth(0.88, 1, tw));
-      const sc = sr.width / 900;
+      const sr = svg.getBoundingClientRect(); // the stage is sticky, so this one has to be read live
+      const vb = svg.viewBox.baseVal;
+      const sc = Math.min(sr.width / vb.width, sr.height / vb.height); // the svg fits its box, centred
+      const ox = sr.left + (sr.width - vb.width * sc) / 2, oy = sr.top + (sr.height - vb.height * sc) / 2;
       const pt = base.getPointAtLength(len * f);
-      lastTravel = { px: sr.left + pt.x * sc, py: sr.top + (pt.y - 2) * sc, box: 34 * sc };
+      lastTravel = { px: ox + pt.x * sc, py: oy + (pt.y - 2) * sc, box: 34 * sc };
       return {
         tw,
         ...lastTravel,
@@ -195,7 +245,7 @@ function initPath(scrollToEl, stepEls, reduced) {
   };
 }
 
-function initTrail(scrollToEl, stepEls, lenis) {
+function initTrail(scrollToEl, stepEls) {
   const nav = document.getElementById('trail');
   const list = nav && nav.querySelector('ol');
   const section = document.getElementById('process');
@@ -231,8 +281,8 @@ function initTrail(scrollToEl, stepEls, lenis) {
       });
     }
   };
+  // smooth scrolling moves the real window scroll, so this one listener covers both modes
   window.addEventListener('scroll', update, { passive: true });
-  if (lenis) lenis.on('scroll', update);
   update();
 }
 
@@ -263,7 +313,14 @@ function initForm(getStage) {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ email: email.value.trim(), message: msg.value.trim() }),
+          body: JSON.stringify({
+            email: email.value.trim(),
+            message: msg.value.trim(),
+            _subject: 'New project enquiry from simplybydaniel.com',
+            _replyto: email.value.trim(),
+            _template: 'table',
+            _captcha: 'false',
+          }),
         });
         if (!res.ok) throw new Error('bad response');
       } else {
@@ -283,22 +340,25 @@ function initForm(getStage) {
 
 // Light up each step's items one by one as you scroll through its hold.
 const stepLists = [];
-function stepProgress() {
-  if (!stepLists.length) {
-    document.querySelectorAll('.step').forEach((step) => {
-      const items = [...step.querySelectorAll('.chips span, .swatches i, .brand-card')];
-      if (items.length) stepLists.push({ step, items, lit: -1 });
-    });
-  }
+function buildStepLists() {
+  document.querySelectorAll('.step').forEach((step) => {
+    const items = [...step.querySelectorAll('.chips span, .swatches i, .brand-card')];
+    // data-lit-at: fraction of the hold by which everything is lit, leaving a pause at the end
+    if (items.length) stepLists.push({ step, items, shown: -1, next: 0, top: 0, h: 1, at: parseFloat(step.dataset.litAt) || 1 });
+  });
+}
+function stepProgress(now = performance.now()) {
   const vh = window.innerHeight;
   for (const s of stepLists) {
-    const r = s.step.getBoundingClientRect();
-    const span = r.height - vh;
-    const sp = span < 50 ? 1 : clamp(-r.top / span);
-    const n = Math.round(sp * s.items.length);
-    if (n !== s.lit) {
-      s.lit = n;
-      s.items.forEach((el, i) => el.classList.toggle('is-lit', i < n));
-    }
+    const span = s.h - vh;
+    const sp = span < 50 ? 1 : clamp((scroll.ys - s.top) / (span * s.at));
+    const want = Math.round(sp * s.items.length);
+    if (want === s.shown) continue;
+    // Walk toward the target one item at a time, so a fast scroll still shows every item arriving
+    // (and a slow machine can't skip straight past them).
+    if (s.shown >= 0 && now < s.next) continue;
+    s.shown = s.shown < 0 ? want : s.shown + (want > s.shown ? 1 : -1);
+    s.next = now + 80;
+    s.items.forEach((el, i) => el.classList.toggle('is-lit', i < s.shown));
   }
 }

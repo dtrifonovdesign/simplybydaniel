@@ -1,4 +1,4 @@
-﻿import * as THREE from 'three';
+import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { DEFAULT, resolvePose, hasFrom } from './poses.js';
 
@@ -80,14 +80,14 @@ function brandShapes() {
   return [ring, arch, leaf, tri];
 }
 
-function buildHalf(shape, desktop) {
+function buildHalf(shape, desktop, detail = 1) {
   const geo = new THREE.ExtrudeGeometry(shape, {
     depth: DEPTH,
     bevelEnabled: true,
     bevelThickness: BEVEL_T,
     bevelSize: 1.5,
-    bevelSegments: desktop ? 6 : 3,
-    curveSegments: desktop ? 48 : 20,
+    bevelSegments: Math.max(2, Math.round((desktop ? 6 : 3) * detail)),
+    curveSegments: Math.max(10, Math.round((desktop ? 48 : 20) * detail)),
   });
   geo.center();
   geo.scale(K, K, K);
@@ -123,11 +123,21 @@ function buildAnchors(list, c, tex) {
   return { obj: pts, mat };
 }
 
-export function createScene(canvas, { desktop, fine, reduced }) {
+export function createScene(canvas, { desktop, fine, reduced, quality }) {
+  // quality: { maxPixels, dprCap, detail } from perf.js. It can change while the page runs (setQuality).
+  let q = { maxPixels: 5.5e6, dprCap: 2, detail: 1, ...quality };
+  const detail = q.detail;
   const renderer = new THREE.WebGLRenderer({
     canvas, antialias: true, alpha: true, powerPreference: 'high-performance',
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, desktop ? 2 : 1.5));
+  // How sharp to draw: the device's pixel ratio, held under a cap and under a total pixel budget,
+  // so a 4K screen on a weak GPU draws a lighter frame instead of a slideshow.
+  const pixelRatio = () => {
+    const w = window.innerWidth, h = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, q.dprCap, desktop ? 2 : 1.5);
+    return Math.max(0.6, Math.min(dpr, Math.sqrt(q.maxPixels / Math.max(1, w * h))));
+  };
+  renderer.setPixelRatio(pixelRatio());
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.setClearColor(0x000000, 0);
 
@@ -156,8 +166,8 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   });
 
   const tShape = topShape(), bShape = bottomShape();
-  const topGeo = buildHalf(tShape, desktop);
-  const botGeo = buildHalf(bShape, desktop);
+  const topGeo = buildHalf(tShape, desktop, detail);
+  const botGeo = buildHalf(bShape, desktop, detail);
   const top = new THREE.Mesh(topGeo, topMat);
   const bot = new THREE.Mesh(botGeo, botMat);
   const topBase = new THREE.Vector3(TOP_C.x * K, TOP_C.y * K, 0);
@@ -196,7 +206,7 @@ export function createScene(canvas, { desktop, fine, reduced }) {
     t.absarc(-w / 2 + r, -h / 2 + r, r, Math.PI, Math.PI * 1.5, false);
     const g2 = new THREE.ExtrudeGeometry(t, {
       depth: 0.22, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05,
-      bevelSegments: 2, curveSegments: desktop ? 16 : 8,
+      bevelSegments: 2, curveSegments: Math.max(6, Math.round((desktop ? 16 : 8) * detail)),
     });
     g2.center();
     return g2;
@@ -235,7 +245,7 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   const brands = brandShapes().map((shape, i) => {
     const geo = new THREE.ExtrudeGeometry(shape, {
       depth: 8, bevelEnabled: true, bevelThickness: 2, bevelSize: 1.2,
-      bevelSegments: desktop ? 4 : 2, curveSegments: desktop ? 40 : 18,
+      bevelSegments: Math.max(2, Math.round((desktop ? 4 : 2) * detail)), curveSegments: Math.max(10, Math.round((desktop ? 40 : 18) * detail)),
     });
     geo.center();
     geo.scale(K, K, K);
@@ -266,6 +276,19 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   });
   const seatPt = new THREE.Vector3();
   const chestPt = new THREE.Vector3();
+  const markBox = new THREE.Box3(), partBox = new THREE.Box3(), boxPt = new THREE.Vector3();
+  // Screen rectangle (px) covered by the two halves, so the arrow can steer around them
+  function markScreenBox() {
+    markBox.setFromObject(top);
+    markBox.union(partBox.setFromObject(bot));
+    let l = Infinity, r = -Infinity, t = Infinity, b = -Infinity;
+    for (let i = 0; i < 8; i++) {
+      boxPt.set(i & 1 ? markBox.max.x : markBox.min.x, i & 2 ? markBox.max.y : markBox.min.y, i & 4 ? markBox.max.z : markBox.min.z).project(camera);
+      const x = (boxPt.x * 0.5 + 0.5) * window.innerWidth, y = (-boxPt.y * 0.5 + 0.5) * window.innerHeight;
+      l = Math.min(l, x); r = Math.max(r, x); t = Math.min(t, y); b = Math.max(b, y);
+    }
+    return { l, r, t, b };
+  }
 
   // A second Daniel (the smiling, front-facing photo) sits on the same edge in the About section.
   const SIT2 = { w: 3.1, h: 4.65, u: 0.5, v: 0.25, scale: 1.0 };
@@ -294,11 +317,12 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   let twS = 0, alphaS = 1, exS = 0, trPx = 0, trPy = 0, trBox = 1;
   let spin = 0, skew = 0, lastOpacity = -1;
 
-  function resize() {
+  function resize(force) {
     const w = window.innerWidth, h = window.innerHeight;
     // Mobile browser bars change innerHeight while scrolling; ignore that.
-    if (lastW === w && Math.abs(h - lastH) < 160) return;
+    if (!force && lastW === w && Math.abs(h - lastH) < 160) return;
     lastW = w; lastH = h;
+    renderer.setPixelRatio(pixelRatio());
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
@@ -530,7 +554,7 @@ export function createScene(canvas, { desktop, fine, reduced }) {
       const di = clamp(d * 1.9 - i * 0.3, 0, 1);
       if (di < 0.004) { mesh.visible = false; return; }
       mesh.visible = true;
-      const cx = (i + 1) * 0.8, cy = (i + 1) * 0.38 - 0.2, cz = -(i + 1) * 0.45;
+      const cx = (i + 1) * (mobile ? 1.05 : 0.8), cy = (i + 1) * 0.38 - 0.2, cz = -(i + 1) * 0.45;
       const enter = (1 - di) * (1 - merge);
       const k = 1 - merge;
       const dep = (i + 1) * 0.2 * par * k;
@@ -565,6 +589,7 @@ export function createScene(canvas, { desktop, fine, reduced }) {
         x: (chestPt.x * 0.5 + 0.5) * window.innerWidth,
         y: (-chestPt.y * 0.5 + 0.5) * window.innerHeight,
         r: SIT.w * 0.2 * sitPivot.scale.x * (window.innerHeight / viewH),
+        box: mobile ? markScreenBox() : null,
       };
     } else {
       sitPivot.visible = false;
@@ -590,7 +615,8 @@ export function createScene(canvas, { desktop, fine, reduced }) {
     const opCanvas = Math.round(p.a * 100) / 100;
     if (opCanvas !== lastOpacity) { canvas.style.opacity = String(opCanvas); lastOpacity = opCanvas; }
 
-    renderer.render(scene, camera);
+    // nothing to draw while the canvas is faded out (for example behind the form)
+    if (opCanvas > 0.004) renderer.render(scene, camera);
     const pxPerWorld = window.innerHeight / viewH;
     return {
       dark: p.dark, sketch: p.sketch, vec: p.vec,
@@ -609,6 +635,9 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   resize();
   return {
     update, resize, measure, setIntroSize,
+    // change the pixel budget while running (the perf monitor calls this when the page can't keep up)
+    setQuality: (next) => { q = { ...q, ...next }; resize(true); },
+    stats: () => 'dpr ' + renderer.getPixelRatio().toFixed(2) + '  ' + canvas.width + 'x' + canvas.height,
     setIntro: (v) => { intro = v; },
     getIntro: () => intro,
     pointer: (x, y) => { mouse.x = x; mouse.y = y; mouse.tgt = 1; },

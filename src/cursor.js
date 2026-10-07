@@ -1,32 +1,28 @@
-// A custom cursor made of the Simply mark. The two halves drift apart with speed,
-// lean into the direction of travel, open wide over links, and squeeze together on press.
+// A custom cursor: a small dot that sticks to the pointer, with a ring that trails behind it.
+// The ring swells over links, stretches a little with speed, and squeezes in on press.
 
-const TOP = 'M48 10H75A5 5 0 0 1 80 15V41A5 5 0 0 1 75 46H48A18 18 0 0 1 48 10Z';
-const BOT = 'M52 54H25A5 5 0 0 0 20 59V85A5 5 0 0 0 25 90H52A18 18 0 0 0 52 54Z';
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
 export function initCursor({ fine, reduced }) {
   if (!fine) return null;
-  const el = document.createElement('div');
-  el.className = 'cursor';
-  el.setAttribute('aria-hidden', 'true');
-  el.innerHTML =
-    '<svg viewBox="0 0 100 100"><g class="c-top"><path class="mark-top" d="' + TOP + '"/></g>' +
-    '<g class="c-bot"><path class="mark-bottom" d="' + BOT + '"/></g></svg>';
-  document.body.appendChild(el);
+  const ring = document.createElement('div');
+  ring.className = 'cursor-ring';
+  const dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  ring.setAttribute('aria-hidden', 'true');
+  dot.setAttribute('aria-hidden', 'true');
+  document.body.append(ring, dot);
   document.documentElement.classList.add('has-cursor');
-  const gTop = el.querySelector('.c-top'), gBot = el.querySelector('.c-bot');
 
-  let tx = -100, ty = -100, x = -100, y = -100, vx = 0, vy = 0;
-  let hover = 0, hoverT = 0, down = 0, downT = 0, vis = 0, visT = 0, ang = 0, open = 0;
+  let tx = -100, ty = -100, dx = -100, dy = -100, rx = -100, ry = -100, vx = 0, vy = 0;
+  let hover = 0, hoverT = 0, down = 0, downT = 0, vis = 0, visT = 0, text = 0, textT = 0;
   const INTERACTIVE = 'a, button, [role="link"], .node, [data-tilt], summary, label';
 
   window.addEventListener('pointermove', (e) => {
     tx = e.clientX; ty = e.clientY; visT = 1;
     const t = e.target;
-    const text = t && t.closest && t.closest('input, textarea');
-    el.classList.toggle('is-text', !!text);
-    hoverT = !text && t && t.closest && t.closest(INTERACTIVE) ? 1 : 0;
+    textT = t && t.closest && t.closest('input, textarea') ? 1 : 0;
+    hoverT = !textT && t && t.closest && t.closest(INTERACTIVE) ? 1 : 0;
   }, { passive: true });
   window.addEventListener('pointerdown', () => { downT = 1; });
   window.addEventListener('pointerup', () => { downT = 0; });
@@ -38,26 +34,33 @@ export function initCursor({ fine, reduced }) {
     requestAnimationFrame(frame);
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
-    const k = reduced ? 1 : 1 - Math.exp(-dt * 18);
-    const px = x, py = y;
-    x += (tx - x) * k; y += (ty - y) * k;
-    vx += ((x - px) / Math.max(dt, 0.001) - vx) * Math.min(1, dt * 10);
-    vy += ((y - py) / Math.max(dt, 0.001) - vy) * Math.min(1, dt * 10);
-    const speed = Math.hypot(vx, vy);
+    // the dot is nearly instant, the ring follows with a soft lag
+    const kd = reduced ? 1 : 1 - Math.exp(-dt * 38);
+    const kr = reduced ? 1 : 1 - Math.exp(-dt * 13);
+    const px = rx, py = ry;
+    dx += (tx - dx) * kd; dy += (ty - dy) * kd;
+    rx += (tx - rx) * kr; ry += (ty - ry) * kr;
+    vx += ((rx - px) / Math.max(dt, 0.001) - vx) * Math.min(1, dt * 10);
+    vy += ((ry - py) / Math.max(dt, 0.001) - vy) * Math.min(1, dt * 10);
     hover += (hoverT - hover) * Math.min(1, dt * 12);
     down += (downT - down) * Math.min(1, dt * 20);
     vis += (visT - vis) * Math.min(1, dt * 12);
-    // lean toward the direction of travel, never more than a little
-    ang += (clamp(vx * 0.035, -22, 22) - ang) * Math.min(1, dt * 10);
-    // the halves part with speed and over links, and squeeze on press
-    open += (clamp(speed * 0.012, 0, 11) + hover * 9 - down * 4 - open) * Math.min(1, dt * 12);
-    const scale = 1 + hover * 0.55 - down * 0.2;
-    el.style.opacity = String(vis);
-    el.style.transform =
-      'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) translate(-50%,-50%) rotate(' + ang.toFixed(2) + 'deg) scale(' + scale.toFixed(3) + ')';
-    gTop.style.transform = 'translate(' + (open * 0.7).toFixed(2) + 'px,' + (-open).toFixed(2) + 'px)';
-    gBot.style.transform = 'translate(' + (-open * 0.7).toFixed(2) + 'px,' + open.toFixed(2) + 'px)';
+    text += (textT - text) * Math.min(1, dt * 14);
+
+    // the ring stretches along the direction of travel, never by much
+    const speed = Math.hypot(vx, vy);
+    const stretch = clamp(speed * 0.00035, 0, 0.22);
+    const ang = Math.atan2(vy, vx) * 180 / Math.PI;
+    const base = 1 + hover * 0.7 - down * 0.28;
+    ring.style.opacity = String(vis * (1 - text));
+    ring.style.transform =
+      'translate(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px) translate(-50%,-50%) rotate(' + ang.toFixed(1) + 'deg) scale(' +
+      (base * (1 + stretch)).toFixed(3) + ',' + (base * (1 - stretch * 0.6)).toFixed(3) + ')';
+    ring.style.setProperty('--fill', (hover * 0.14).toFixed(3));
+    dot.style.opacity = String(vis * (1 - text));
+    dot.style.transform =
+      'translate(' + dx.toFixed(2) + 'px,' + dy.toFixed(2) + 'px) translate(-50%,-50%) scale(' + (1 - hover * 0.35 + down * 0.4).toFixed(3) + ')';
   }
   requestAnimationFrame(frame);
-  return el;
+  return ring;
 }

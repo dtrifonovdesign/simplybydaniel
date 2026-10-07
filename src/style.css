@@ -82,6 +82,11 @@ body.is-loading [data-intro] { opacity: 0 !important; transform: translateY(16px
 .process__head h2 { max-width: 20ch; }
 .process__head .lead { max-width: 46ch; }
 .step h3 { font-size: var(--fs-h2); line-height: 1.08; letter-spacing: -0.03em; }
+/* The step name is the heading: a small brass number over a large word */
+.step__title { display: grid; gap: 10px; font-size: clamp(2.6rem, 6.4vw, 4.6rem) !important; line-height: 1 !important; }
+.step__num { display: flex; align-items: center; gap: 12px; font-family: var(--font-body); font-size: var(--fs-small); font-weight: 600; letter-spacing: .14em; color: var(--brass); }
+.step__num::after { content: ""; width: 44px; height: 1px; background: currentColor; opacity: .7; }
+.about .rules__label { font-family: var(--font-heading); font-weight: 600; font-size: var(--fs-h4); color: var(--text); margin-top: var(--space-2); }
 .step p:not(.eyebrow) { max-width: 46ch; }
 
 .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
@@ -139,6 +144,10 @@ body.is-loading [data-intro] { opacity: 0 !important; transform: translateY(16px
 .photo:has(img) .photo__ph { display: none; }
 .about__copy { display: grid; gap: var(--space-4); }
 .about__copy p:not(.eyebrow):not(.lead) { max-width: 52ch; }
+/* Phones: the mark stays put while this text scrolls over it, so the text gets its own solid panel */
+@media (max-width: 859px) {
+  .about__copy { position: relative; z-index: 2; background: var(--bg); border-radius: var(--radius-lg, 24px); padding: 28px 22px; margin-inline: -6px; box-shadow: 0 0 0 1px var(--line), 0 18px 50px rgba(26, 24, 22, .14); }
+}
 .points { list-style: none; padding: 0; margin: var(--space-3) 0 0; display: grid; gap: var(--space-3); }
 .points li { padding-top: var(--space-3); border-top: 1px solid var(--line); }
 .points b { color: var(--text); font-weight: 600; }
@@ -278,6 +287,7 @@ body.is-loading [data-intro] { opacity: 0 !important; transform: translateY(16px
 .path-stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; align-items: center; }
 .path-stage .process__head { padding-top: 0; }
 @media (max-width: 859px) { .path-pin { height: 340vh; } }
+.path--vertical svg { height: min(400px, 48svh); width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .path-pin { height: auto; }
   .path-stage { position: static; height: auto; padding-block: 24vh 8vh; }
@@ -288,7 +298,13 @@ body.is-loading [data-intro] { opacity: 0 !important; transform: translateY(16px
 .step > .container { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; align-items: center; justify-content: flex-end; }
 @media (max-width: 859px) {
   .step { min-height: calc(var(--step-h, 190vh) * 0.85); padding-bottom: 0; align-items: initial; }
-  .step > .container { align-items: flex-end; justify-content: flex-start; padding-bottom: 12svh; }
+  .step > .container { align-items: flex-end; justify-content: flex-start; padding-bottom: 6svh; padding-top: 84px; }
+  .step[data-pose="p5"] .chips span:last-child { display: none; } /* brand-kit.pdf: keep the list short on phones */
+  /* Research: three compact cards, so the whole step (heading included) fits under the nav while it holds */
+  .brand-card { grid-template-columns: auto 1fr; padding: 12px 14px; gap: 2px 14px; }
+  .brand-card__logo { grid-row: span 2; width: 44px; height: 44px; border-radius: 13px; }
+  .brand-card__dots, .brand-card figcaption { display: none; }
+  .refs { gap: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .step { min-height: 92svh; }
@@ -330,12 +346,10 @@ body.is-loading [data-intro] { opacity: 0 !important; transform: translateY(16px
 /* ---------- custom cursor ---------- */
 html.has-cursor, html.has-cursor * { cursor: none !important; }
 html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
-.cursor { position: fixed; left: 0; top: 0; width: 30px; height: 30px; z-index: 9999; pointer-events: none; opacity: 0; will-change: transform; }
-.cursor svg { width: 100%; height: 100%; overflow: visible; display: block; }
-.cursor g { transition: none; }
-.cursor .mark-top { fill: var(--logo-top, var(--ink)); stroke: var(--bg); stroke-width: 5; paint-order: stroke; }
-.cursor .mark-bottom { fill: var(--brass); stroke: var(--bg); stroke-width: 5; paint-order: stroke; }
-.cursor.is-text { visibility: hidden; }
+/* white + difference blending reads as dark on cream and light on the ink section */
+.cursor-ring, .cursor-dot { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; opacity: 0; will-change: transform; mix-blend-mode: difference; }
+.cursor-ring { width: 38px; height: 38px; border: 1.5px solid #fff; border-radius: 50%; --fill: 0; background: rgba(255, 255, 255, var(--fill)); }
+.cursor-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
 
 /* ---------- About photos ---------- */
 .about__photos { min-height: 680px; }
@@ -421,3 +435,13 @@ html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
 .about__figure { height: 700px; min-height: 0; }
 .about__figure .fig-mark, .about__figure .fig-img { display: none; }
 @media (max-width: 859px) { .about__figure { height: 600px; } }
+
+/* ---------- adaptive quality (set by src/perf.js) ---------- */
+/* No blend mode on the cursor: plain ink on light, plain cream on the dark section */
+html.blend-off .cursor-ring, html.blend-off .cursor-dot { mix-blend-mode: normal; }
+html.blend-off .cursor-ring { border-color: var(--text); }
+html.blend-off .cursor-dot { background: var(--text); }
+/* Frosted nav costs a lot on weak GPUs; use a solid bar instead */
+html.blur-off .nav.is-scrolled { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg); }
+/* The hand-drawn wobble is an SVG filter; the lines stay, drawn clean */
+html.fx-off .sketch-overlay g, html.fx-off .arrow-overlay g { filter: none !important; }

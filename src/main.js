@@ -7,6 +7,8 @@ import { createSketch } from './sketch.js';
 import { createDigital } from './digital.js';
 import { initCursor } from './cursor.js';
 import { initFeatures } from './features.js';
+import { initPerf } from './perf.js';
+import { scroll, updateScroll } from './scroll.js';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const wide = window.matchMedia('(min-width: 860px)').matches;
@@ -21,9 +23,13 @@ const quick = new URLSearchParams(location.search).has('skip') || reduced;
 document.documentElement.classList.add('ready');
 body.classList.add('is-loading');
 
-// Smooth scroll on desktop only; phones keep native scrolling.
+// Quality tier: a guess from the device now, adjusted by the real frame rate while the page runs.
+const perf = initPerf({ wide, reduced });
+
+// Smooth scroll on capable desktops; phones and weaker machines keep native scrolling
+// (native scrolling is drawn by the browser itself, so it stays smooth even when the page is busy).
 let lenis = null;
-if (fine && wide && !reduced) {
+if (fine && wide && !reduced && perf.cfg.lenis) {
   lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 });
   lenis.stop();
 }
@@ -31,14 +37,27 @@ if (fine && wide && !reduced) {
 // 3D scene
 let stage = null;
 try {
-  stage = createScene(canvas, { desktop: wide, fine, reduced });
+  stage = createScene(canvas, { desktop: wide, fine, reduced, quality: perf.cfg });
 } catch (err) {
   console.warn('WebGL unavailable', err);
   body.classList.add('no-webgl');
 }
+perf.stats = () => (stage ? stage.stats() : '');
+perf.onChange((cfg) => {
+  stage?.setQuality(cfg);
+  if (!cfg.lenis && lenis) { lenis.destroy(); lenis = null; }
+});
 
+let features = null;
+// Phones: the About pose belongs to the picture at the top of the section, not the whole (tall) section,
+// so the mark is already in place when Daniel scrolls into view instead of still travelling.
+if (!wide) {
+  const fig = document.getElementById('about-figure');
+  const sec = document.getElementById('about');
+  if (fig && sec) { fig.dataset.pose = 'about'; sec.removeAttribute('data-pose'); }
+}
 const anchorEls = [...document.querySelectorAll('[data-pose]')];
-const remeasure = () => stage && stage.measure(anchorEls);
+const remeasure = () => { stage && stage.measure(anchorEls); features && features.measure(); };
 const onResize = () => { stage && stage.resize(); remeasure(); };
 window.addEventListener('resize', onResize);
 if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(document.body);
@@ -57,7 +76,7 @@ const fileLabels = FILE_NAMES.map((name) => {
   document.body.appendChild(el);
   return el;
 });
-const features = initFeatures({ lenis, reduced, getStage: () => stage });
+features = initFeatures({ getLenis: () => lenis, reduced, getStage: () => stage });
 
 // Pointer (fine pointers only)
 if (fine) {
@@ -88,37 +107,13 @@ if (fine && !reduced) {
   });
 }
 
-// Daniel and the big mark behind him drift a little against each other
-const aboutFig = document.getElementById('about-figure');
-const figMove = { x: 0, y: 0, tx: 0, ty: 0 };
-if (aboutFig && fine) {
-  window.addEventListener('pointermove', (e) => {
-    figMove.tx = (e.clientX / innerWidth) * 2 - 1;
-    figMove.ty = (e.clientY / innerHeight) * 2 - 1;
-  }, { passive: true });
-}
-function figFrame() {
-  if (!aboutFig) return;
-  if (aboutFig.classList.contains('is-visible') && !aboutFig._settled) { aboutFig._settled = 1; setTimeout(() => aboutFig.classList.add('is-settled'), 1300); }
-  const r = aboutFig.getBoundingClientRect();
-  if (r.bottom < -100 || r.top > innerHeight + 100) return;
-  figMove.x += (figMove.tx - figMove.x) * 0.08;
-  figMove.y += (figMove.ty - figMove.y) * 0.08;
-  const sc = Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / innerHeight));
-  aboutFig.style.setProperty('--px', figMove.x.toFixed(3));
-  aboutFig.style.setProperty('--py', (figMove.y + sc * 0.8).toFixed(3));
-}
-
 // A hand-drawn arrow from the word "Daniel" to the Daniel sitting on the mark
 const NSA = 'http://www.w3.org/2000/svg';
 const arrowSvg = document.createElementNS(NSA, 'svg');
 arrowSvg.setAttribute('class', 'arrow-overlay');
 arrowSvg.setAttribute('aria-hidden', 'true');
 arrowSvg.innerHTML =
-  '<defs><filter id="arrow-rough" x="-5%" y="-5%" width="110%" height="110%">' +
-  '<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>' +
-  '<feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter></defs>' +
-  '<g filter="url(#arrow-rough)" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+  '<g fill="none" stroke-linecap="round" stroke-linejoin="round">' +
   '<path class="arrow-line" pathLength="1" />' +
   '<path class="arrow-head" /></g>';
 document.body.appendChild(arrowSvg);
@@ -127,29 +122,77 @@ const arrowHead = arrowSvg.querySelector('.arrow-head');
 arrowLine.style.strokeDasharray = '1';
 let arrowProg = 0;
 const aSmooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const whoEl = document.querySelector('.who');
+let arrowShown = true;
+let arrowEnd = null;
 function arrowFrame(dt, sit) {
-  const who = document.querySelector('.who');
-  if (!who || !sit || sit.a < 0.55) {
+  if (!whoEl || !sit || sit.a < 0.55) {
     arrowProg = 0;
-    arrowSvg.style.opacity = '0';
+    arrowEnd = null;
+    if (arrowShown) { arrowSvg.style.display = 'none'; arrowShown = false; } // nothing to composite while hidden
     return;
   }
-  const r = who.getBoundingClientRect();
-  const sx = r.right + 10, sy = r.top + r.height * 0.4;
-  const ex = sit.x - sit.r - 18, ey = sit.y;
+  if (!arrowShown) { arrowSvg.style.display = ''; arrowShown = true; }
+  // Both ends follow the same smoothed scroll as the 3D figure. The word "Daniel" is placed by its page
+  // position minus the smoothed scroll (not its raw on-screen rect), so a stepped wheel can't make one end
+  // jump while the other glides.
+  const r = whoEl.getBoundingClientRect();
+  const sx = r.right + 10, sy = r.top + r.height * 0.4 + (scroll.y - scroll.ys);
+  // Phones: the word sits below the mark and the figure above it, so the arrow swings out to the right
+  // of the mark and lands on the figure's right side instead of cutting across the logo.
+  const box = wide ? null : sit.box;
+  const tx = wide ? sit.x - sit.r - 18 : sit.x + sit.r + 14;
+  const ty = box ? Math.min(sit.y, box.t - 12) : sit.y; // phones: land above the mark's top edge, never on it
+  const k = arrowEnd ? 1 - Math.exp(-dt * 22) : 1;
+  arrowEnd = arrowEnd || { x: tx, y: ty };
+  arrowEnd.x += (tx - arrowEnd.x) * k;
+  arrowEnd.y += (ty - arrowEnd.y) * k;
+  const ex = arrowEnd.x, ey = arrowEnd.y;
   const dx = ex - sx, dy = ey - sy, len = Math.hypot(dx, dy) || 1;
-  let nx = -dy / len, ny = dx / len;
-  if (ny > 0) { nx = -nx; ny = -ny; } // bow upward
-  const bow = Math.min(90, len * 0.22);
-  const c1x = sx + dx * 0.33 + nx * bow, c1y = sy + dy * 0.33 + ny * bow;
-  const c2x = sx + dx * 0.68 + nx * bow, c2y = sy + dy * 0.68 + ny * bow;
-  arrowLine.setAttribute('d', 'M' + sx + ' ' + sy + ' C' + c1x + ' ' + c1y + ', ' + c2x + ' ' + c2y + ', ' + ex + ' ' + ey);
+  let c1x, c1y, c2x, c2y;
+  if (box) {
+    // Phones: leave "Daniel" heading right, run up a rail that stays clear of the whole mark, and come in
+    // to the figure from its right. A cubic with both handles on the rail only reaches ~75% of the way
+    // out, so the rail is set far enough that the curve itself keeps a margin from the mark's edge.
+    const want = box.r + 26;
+    let rail = sx >= want ? sx + 40 : sx + (want - sx) / 0.72;
+    rail = Math.min(rail, Math.max(sx + 30, window.innerWidth - 8));
+    c1x = rail; c1y = sy + 4;
+    c2x = rail; c2y = ey;
+  } else {
+    let nx = -dy / len, ny = dx / len;
+    if (ny > 0) { nx = -nx; ny = -ny; } // bow upward
+    const bow = Math.min(90, len * 0.22);
+    c1x = sx + dx * 0.33 + nx * bow; c1y = sy + dy * 0.33 + ny * bow;
+    c2x = sx + dx * 0.68 + nx * bow; c2y = sy + dy * 0.68 + ny * bow;
+  }
+  const bez = (u) => {
+    const v = 1 - u;
+    return [
+      v * v * v * sx + 3 * v * v * u * c1x + 3 * v * u * u * c2x + u * u * u * ex,
+      v * v * v * sy + 3 * v * v * u * c1y + 3 * v * u * u * c2y + u * u * u * ey,
+    ];
+  };
+  // The hand-drawn wobble is built into the line itself (a fixed offset along its length), so it
+  // stays put as the line moves, instead of an SVG noise filter that shimmers every frame.
+  const N = 48;
+  let d = '';
+  for (let i = 0; i <= N; i++) {
+    const u = i / N;
+    let [px, py] = bez(u);
+    const [ax, ay] = bez(Math.max(0, u - 0.01)), [bx, by] = bez(Math.min(1, u + 0.01));
+    const tl = Math.hypot(bx - ax, by - ay) || 1;
+    const w = Math.sin(u * Math.PI) * (Math.sin(u * 19 + 1.3) * 1.1 + Math.sin(u * 7.3) * 1.3);
+    px += (-(by - ay) / tl) * w; py += ((bx - ax) / tl) * w;
+    d += (i ? ' L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1);
+  }
+  arrowLine.setAttribute('d', d);
   const ang = Math.atan2(ey - c2y, ex - c2x);
   const hl = 13, spread = 0.5;
   arrowHead.setAttribute('d',
-    'M' + (ex - Math.cos(ang - spread) * hl) + ' ' + (ey - Math.sin(ang - spread) * hl) +
-    ' L' + ex + ' ' + ey +
-    ' L' + (ex - Math.cos(ang + spread) * hl) + ' ' + (ey - Math.sin(ang + spread) * hl));
+    'M' + (ex - Math.cos(ang - spread) * hl).toFixed(1) + ' ' + (ey - Math.sin(ang - spread) * hl).toFixed(1) +
+    ' L' + ex.toFixed(1) + ' ' + ey.toFixed(1) +
+    ' L' + (ex - Math.cos(ang + spread) * hl).toFixed(1) + ' ' + (ey - Math.sin(ang + spread) * hl).toFixed(1));
   arrowProg = reduced ? 1 : Math.min(1, arrowProg + dt * 0.75);
   const t = aSmooth(0, 1, Math.max(0, arrowProg - 0.2) / 0.8);
   arrowLine.style.strokeDashoffset = String(1 - t);
@@ -159,25 +202,24 @@ function arrowFrame(dt, sit) {
 
 // Main loop
 let last = performance.now();
-let lastScroll = 0;
-let velSmooth = 0;
 let wasDark = false;
+let wasScrolled = false;
 function frame(now) {
   requestAnimationFrame(frame);
-  const dt = Math.min(0.05, (now - last) / 1000);
+  // Time-based, with a generous ceiling: on a slow machine animations take the same real time,
+  // they just advance in bigger steps, instead of dragging out in slow motion.
+  const dt = Math.min(0.1, (now - last) / 1000);
   last = now;
+  perf.frame(now);
   lenis?.raf(now);
-  figFrame();
-  const y = lenis ? lenis.scroll : window.scrollY;
-  const velRaw = dt > 0 ? (y - lastScroll) / dt : 0;
-  velSmooth += (velRaw - velSmooth) * Math.min(1, dt * 8);
-  const vel = velSmooth;
-  lastScroll = y;
-  nav.classList.toggle('is-scrolled', y > 24);
-  if (stage && !document.hidden) {
+  updateScroll(lenis ? lenis.scroll : window.scrollY, dt);
+  const scrolled = scroll.y > 24;
+  if (scrolled !== wasScrolled) { nav.classList.toggle('is-scrolled', scrolled); wasScrolled = scrolled; }
+  if (document.hidden) return;
+  features.fly(now);
+  if (stage) {
     stage.setTravel(features.travel());
-    features.fly();
-    const v = stage.update(dt, y, vel, now / 1000);
+    const v = stage.update(dt, scroll.ys, scroll.vel, now / 1000);
     const dark = v.dark;
     sketch.update(v, dark);
     digital.update(v, dark);
@@ -214,6 +256,7 @@ function finishIntro() {
   body.classList.remove('is-loading');
   loader.classList.add('is-done');
   lenis?.start();
+  features.measure(); // the page just became its real height
   setTimeout(() => loader.remove(), 1000);
 }
 
