@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+﻿import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { DEFAULT, resolvePose, hasFrom } from './poses.js';
 
@@ -260,7 +260,7 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   sitPivot.visible = false;
   scene.add(sitPivot);
   let sitReady = false;
-  new THREE.TextureLoader().load('/images/daniel-sit.webp', (t) => {
+  new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'images/daniel-sit.webp', (t) => {
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
     sitMat.map = t; sitMat.needsUpdate = true; sitReady = true;
   });
@@ -277,7 +277,7 @@ export function createScene(canvas, { desktop, fine, reduced }) {
   sit2Pivot.visible = false;
   scene.add(sit2Pivot);
   let sit2Ready = false;
-  new THREE.TextureLoader().load('/images/daniel-sit-front-fade.webp', (t) => {
+  new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'images/daniel-sit-front-fade.webp', (t) => {
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
     sit2Mat.map = t; sit2Mat.needsUpdate = true; sit2Ready = true;
   });
