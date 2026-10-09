@@ -7,7 +7,7 @@ export function initNotice() {
   box.className = 'notice';
   box.setAttribute('role', 'region');
   box.setAttribute('aria-label', 'Privacy notice');
-  box.innerHTML = '<p>No ads and no tracking cookies here. This site counts visits without identifying anyone and saves one small display setting on your device. <a href="./privacy/">Privacy policy</a></p><button type="button">Got it</button>';
+  box.innerHTML = '<p>No ads or tracking cookies. Visits are counted anonymously. <a href="./privacy/">Privacy policy</a></p><button type="button">Got it</button>';
   const close = () => {
     try { localStorage.setItem(KEY, '1'); } catch (e) { /* ignore */ }
     box.classList.remove('is-in');

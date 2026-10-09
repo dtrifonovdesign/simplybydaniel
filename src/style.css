@@ -455,11 +455,10 @@ html.fx-off .sketch-overlay g, html.fx-off .arrow-overlay g { filter: none !impo
 .form.is-sent .form__note { display: none; }
 .footer .small a { color: inherit; }
 
-/* Cookie and storage notice */
-.notice { position: fixed; z-index: 60; left: var(--gutter); right: var(--gutter); bottom: max(16px, env(safe-area-inset-bottom)); margin-inline: auto; max-width: 560px; display: flex; align-items: center; gap: 14px; padding: 14px 16px 14px 20px; border-radius: var(--radius-md); background: var(--ink); color: var(--cream); border: 1px solid rgba(244,238,227,.22); box-shadow: 0 12px 40px rgba(26,24,22,.28); font-size: var(--fs-small); line-height: 1.45; opacity: 0; transform: translateY(16px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+/* Cookie and storage notice: small card, bottom right */
+.notice { position: fixed; z-index: 60; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); width: min(264px, calc(100vw - 32px)); display: grid; gap: 10px; padding: 14px 16px; border-radius: 14px; background: var(--ink); color: var(--cream); border: 1px solid rgba(244,238,227,.22); box-shadow: 0 10px 30px rgba(26,24,22,.25); font-size: 13px; line-height: 1.45; opacity: 0; transform: translateY(12px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
 .notice.is-in { opacity: 1; transform: none; }
-.notice p { margin: 0; flex: 1; color: inherit; }
+.notice p { margin: 0; color: inherit; }
 .notice a { color: var(--brass); }
-.notice button { flex: none; font: inherit; font-weight: 600; color: var(--ink); background: var(--cream); border: 0; border-radius: var(--radius-pill); padding: 9px 18px; cursor: pointer; }
+.notice button { justify-self: end; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: var(--cream); border: 0; border-radius: var(--radius-pill); padding: 6px 14px; cursor: pointer; }
 .notice button:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
-@media (max-width: 480px) { .notice { flex-direction: column; align-items: stretch; text-align: left; } .notice button { align-self: flex-end; } }
