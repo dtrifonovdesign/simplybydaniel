@@ -21,6 +21,12 @@ Fine pointer + wide screen: Lenis smooth scroll, cursor tilt, scroll-velocity sp
 ## Contact form
 `#contact-form` in index.html has `data-endpoint="https://formsubmit.co/ajax/<alias>"`, so submissions are POSTed as JSON to FormSubmit and forwarded to the inbox the alias belongs to. Add a `data-email` attribute and empty `data-endpoint` to use the visitor's email app instead.
 
+## SEO, analytics and legal pages
+- `index.html` head holds the title, description, canonical, Open Graph and JSON-LD. `public/og-image.png` is the link preview (rebuild with `node tools/make-og.mjs`).
+- `public/robots.txt`, `public/sitemap.xml` (add new pages there), `public/404.html` (GitHub Pages serves it for unknown URLs) and `public/privacy/index.html`.
+- `src/analytics.js`: Umami, cookieless. Paste the Website ID into `WEBSITE_ID` to turn it on; until then nothing loads. Events: `cta-*` clicks, `view-<section>`, `form-start`, `form-submit`, `form-invalid`, `form-error`.
+- `src/notice.js`: the one-time privacy notice. Update the privacy policy if you add anything that stores data.
+
 ## Performance and quality tiers
 
 The site picks how heavily to draw itself, so weaker machines still get the full design in a lighter form.

@@ -3,12 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Simply | Brands, made simply.</title>
-  <meta name="description" content="Simply is a brand design practice by Daniel. Logos, brand kits and websites, designed by hand and finished with care." />
+  <title>Simply | Brand design: logos, brand kits and websites</title>
+  <meta name="description" content="Simply is a brand design practice by Daniel. Logos, brand kits and websites for companies that want one clear identity, designed by hand and finished with care." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://simplybydaniel.com/" />
   <meta name="theme-color" content="#F4EEE3" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Simply by Daniel" />
+  <meta property="og:url" content="https://simplybydaniel.com/" />
   <meta property="og:title" content="Simply | Brands, made simply." />
   <meta property="og:description" content="Logos, brand kits and websites, designed by hand and finished with care." />
+  <meta property="og:image" content="https://simplybydaniel.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The Simply mark, two rounded shapes in ink and brass, beside the words Simply: Brands, made simply." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Simply | Brands, made simply." />
+  <meta name="twitter:description" content="Logos, brand kits and websites, designed by hand and finished with care." />
+  <meta name="twitter:image" content="https://simplybydaniel.com/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebSite", "@id": "https://simplybydaniel.com/#website", "url": "https://simplybydaniel.com/", "name": "Simply by Daniel" },
+      {
+        "@type": "ProfessionalService", "@id": "https://simplybydaniel.com/#business",
+        "name": "Simply", "alternateName": "Simply by Daniel", "url": "https://simplybydaniel.com/",
+        "slogan": "Brands, made simply.",
+        "description": "A brand design practice by Daniel: logos, brand kits and websites for companies that want one clear identity.",
+        "image": "https://simplybydaniel.com/og-image.png", "logo": "https://simplybydaniel.com/favicon.svg",
+        "founder": { "@type": "Person", "name": "Daniel" },
+        "knowsAbout": ["Logo design", "Brand identity", "Brand kits", "Web design"]
+      }
+    ]
+  }
+  </script>
+  <noscript><style>.loader { display: none; } html:not(.ready) main, html:not(.ready) footer, html:not(.ready) .nav { visibility: visible; } .noscript { position: relative; z-index: 3; margin: 0; padding: 14px 20px; text-align: center; background: #EBE3D3; color: #1A1816; font: 15px/1.4 system-ui, sans-serif; }</style></noscript>
   <style>
     /* Critical styles so nothing flashes oversized before the stylesheet loads */
     html, body { margin: 0; background: #F4EEE3; }
@@ -34,6 +65,8 @@
     </div>
   </div>
 
+  <noscript><p class="noscript">The animations and the contact form on this page need JavaScript. Please turn it on, or try another browser.</p></noscript>
+
   <canvas id="stage" aria-hidden="true"></canvas>
 
   <nav class="trail" id="trail" aria-label="Process progress">
@@ -53,7 +86,7 @@
         <a href="#process">Process</a>
         <a href="#case-studies">Case studies</a>
         <a href="#about">About</a>
-        <a class="btn btn--primary" href="#contact">Start a project</a>
+        <a class="btn btn--primary" href="#contact" data-track="cta-nav-start">Start a project</a>
       </nav>
     </div>
   </header>
@@ -67,8 +100,8 @@
           <h1 class="display reveal" style="--i:1" data-intro>Logos, brand kits and websites.</h1>
           <p class="lead reveal" style="--i:2" data-intro>For companies that want one clear identity.</p>
           <div class="hero__cta reveal" style="--i:3" data-intro>
-            <a class="btn btn--primary" href="#process">See the process</a>
-            <a class="btn btn--secondary" href="#contact">Start a project</a>
+            <a class="btn btn--primary" href="#process" data-track="cta-hero-process">See the process</a>
+            <a class="btn btn--secondary" href="#contact" data-track="cta-hero-start">Start a project</a>
           </div>
         </div>
         <div class="scroll-cue reveal" style="--i:5" data-intro aria-hidden="true"><span>Scroll</span><i></i></div>
@@ -112,21 +145,21 @@
           <p class="refs__label reveal" style="--i:3">Three brands with a similar feel</p>
           <div class="refs reveal" style="--i:4">
             <figure class="brand-card">
-              <div class="brand-card__logo"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16" fill="var(--brass)"/><circle cx="24" cy="24" r="7" fill="var(--ink)"/></svg></div>
+              <div class="brand-card__logo"><svg viewBox="0 0 48 48" role="img" aria-label="Fieldnote logo: a brass ring around a dark dot"><circle cx="24" cy="24" r="16" fill="var(--brass)"/><circle cx="24" cy="24" r="7" fill="var(--ink)"/></svg></div>
               <b>Fieldnote</b>
               <span class="brand-card__tag">Warm · handmade</span>
               <div class="brand-card__dots"><i style="background:#E8D9BD"></i><i style="background:#B8935A"></i><i style="background:#5C554B"></i></div>
               <figcaption>Loves: the quiet palette</figcaption>
             </figure>
             <figure class="brand-card">
-              <div class="brand-card__logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38V22a14 14 0 0 1 28 0v16Z" fill="var(--cream)"/><rect x="19" y="26" width="10" height="12" rx="5" fill="var(--ink)"/></svg></div>
+              <div class="brand-card__logo"><svg viewBox="0 0 48 48" role="img" aria-label="Oak and Rye logo: a cream arch with a dark doorway"><path d="M10 38V22a14 14 0 0 1 28 0v16Z" fill="var(--cream)"/><rect x="19" y="26" width="10" height="12" rx="5" fill="var(--ink)"/></svg></div>
               <b>Oak &amp; Rye</b>
               <span class="brand-card__tag">Calm · established</span>
               <div class="brand-card__dots"><i style="background:#F4EEE3"></i><i style="background:#3D3832"></i><i style="background:#B8935A"></i></div>
               <figcaption>Loves: the soft arch</figcaption>
             </figure>
             <figure class="brand-card">
-              <div class="brand-card__logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38C10 20 20 10 38 10c0 18-10 28-28 28Z" fill="var(--brass)"/><path d="M10 38 30 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg></div>
+              <div class="brand-card__logo"><svg viewBox="0 0 48 48" role="img" aria-label="Lumen logo: a brass leaf shape with a dark stem"><path d="M10 38C10 20 20 10 38 10c0 18-10 28-28 28Z" fill="var(--brass)"/><path d="M10 38 30 18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg></div>
               <b>Lumen</b>
               <span class="brand-card__tag">Clear · modern</span>
               <div class="brand-card__dots"><i style="background:#EBE3D3"></i><i style="background:#1A1816"></i><i style="background:#B8935A"></i></div>
@@ -167,8 +200,8 @@
           <h3 class="step__title reveal"><span class="step__num">06</span>System</h3>
           <p class="reveal" style="--i:2">Colors, typefaces and one clear message. A tagline only if the brand needs one.</p>
           <div class="system reveal" style="--i:3">
-            <div class="swatches"><i style="background:#F4EEE3"></i><i style="background:#EBE3D3"></i><i style="background:#B8935A"></i><i style="background:#3D3832"></i></div>
-            <p class="aa">Aa <small>Bricolage · Figtree</small></p>
+            <div class="swatches" role="img" aria-label="Colour palette: cream, sand, brass and charcoal"><i style="background:#F4EEE3"></i><i style="background:#EBE3D3"></i><i style="background:#B8935A"></i><i style="background:#3D3832"></i></div>
+            <p class="aa"><span aria-hidden="true">Aa</span> <small>Bricolage · Figtree</small></p>
           </div>
         </div></div>
       </article>
@@ -219,15 +252,18 @@
         <form class="form reveal" style="--i:3" id="contact-form" novalidate data-endpoint="https://formsubmit.co/ajax/26fe61add121185e724a7e561af7b179">
           <label class="field">
             <span>Your email</span>
-            <input type="email" name="email" autocomplete="email" placeholder="you@company.com" required />
+            <input type="email" name="email" autocomplete="email" placeholder="you@company.com" required aria-describedby="email-error" />
+            <small class="field__error" id="email-error"></small>
           </label>
           <label class="field">
             <span>What are you making?</span>
-            <textarea name="message" rows="3" placeholder="A few words about your company" required></textarea>
+            <textarea name="message" rows="3" placeholder="A few words about your company" required aria-describedby="message-error"></textarea>
+            <small class="field__error" id="message-error"></small>
           </label>
           <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <button class="btn btn--primary" type="submit">Send</button>
           <p class="form__status" role="status" aria-live="polite"></p>
+          <p class="form__note">By sending this you agree to the <a href="./privacy/">privacy policy</a>.</p>
         </form>
       </div></div>
     </section>
@@ -242,7 +278,7 @@
         </svg>
         <span class="wordmark">Simply</span>
       </a>
-      <p class="small">© 2026 Simply by Daniel</p>
+      <p class="small">© 2026 Simply by Daniel · <a href="./privacy/">Privacy</a></p>
     </div>
   </footer>
 

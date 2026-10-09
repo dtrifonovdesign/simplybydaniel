@@ -1,3 +1,4 @@
+import { track } from './analytics.js';
 // Process path, sticky trail and contact form. Receives the shared pieces from main.js.
 import { scroll } from './scroll.js';
 
@@ -295,19 +296,44 @@ function initForm(getStage) {
   if (!form) return;
   const status = form.querySelector('.form__status');
   const email = form.elements.email, msg = form.elements.message;
-  form.addEventListener('focusin', () => getStage()?.setForm(1));
+  const errors = { email: document.getElementById('email-error'), message: document.getElementById('message-error') };
+  let started = false;
+  form.addEventListener('focusin', () => {
+    getStage()?.setForm(1);
+    if (!started) { started = true; track('form-start'); }
+  });
   form.addEventListener('focusout', () => { if (!form.contains(document.activeElement)) getStage()?.setForm(0); });
-  const mark = (input, bad) => input.closest('.field').classList.toggle('is-error', bad);
+
+  // Show or clear the message under a field, and tell assistive tech which field is wrong.
+  const mark = (input, text) => {
+    input.closest('.field').classList.toggle('is-error', !!text);
+    input.setAttribute('aria-invalid', text ? 'true' : 'false');
+    errors[input.name].textContent = text || '';
+  };
+  const fail = (text) => { status.textContent = text; status.classList.add('is-error'); };
+  [email, msg].forEach((input) => input.addEventListener('input', () => { if (input.getAttribute('aria-invalid') === 'true') mark(input, ''); }));
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (form.elements.company.value) return; // honeypot
-    const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
-    const okMsg = msg.value.trim().length > 2;
-    mark(email, !okEmail); mark(msg, !okMsg);
-    if (!okEmail || !okMsg) {
-      status.textContent = !okEmail ? 'Please check your email address.' : 'Add a few words about what you are making.';
-      (okEmail ? msg : email).focus();
+    status.classList.remove('is-error');
+    const value = email.value.trim();
+    const emailText = !value
+      ? 'Please enter your email address so I can reply.'
+      : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+        ? 'That email address does not look right. Please check it for typos.'
+        : '';
+    const msgText = msg.value.trim().length > 2 ? '' : 'Add a few words about your company or what you are making.';
+    mark(email, emailText); mark(msg, msgText);
+    if (emailText || msgText) {
+      status.textContent = '';
+      (emailText ? email : msg).focus();
+      track('form-invalid');
+      return;
+    }
+    if (!navigator.onLine) {
+      fail('You seem to be offline. Please check your connection and try again.');
+      track('form-error', { reason: 'offline' });
       return;
     }
     status.textContent = 'Sending...';
@@ -318,28 +344,33 @@ function initForm(getStage) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
-            email: email.value.trim(),
+            email: value,
             message: msg.value.trim(),
             _subject: 'New project enquiry from simplybydaniel.com',
-            _replyto: email.value.trim(),
+            _replyto: value,
             _template: 'table',
             _captcha: 'false',
           }),
         });
+        if (res.status === 429) throw new Error('rate');
         if (!res.ok) throw new Error('bad response');
       } else if (!form.dataset.email) {
         throw new Error('no endpoint');
       } else {
-        const body = `${msg.value.trim()}\n\nReply to: ${email.value.trim()}`;
+        const body = `${msg.value.trim()}\n\nReply to: ${value}`;
         location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('New project')}&body=${encodeURIComponent(body)}`;
       }
       form.classList.add('is-sent');
       status.textContent = endpoint ? 'Thank you. I will reply soon.' : 'Opening your email app. Thank you.';
+      track('form-submit');
       const st = getStage();
       st?.setForm(0);
       st?.celebrate();
     } catch (err) {
-      status.textContent = 'Something went wrong. Please try again in a moment.';
+      fail(err.message === 'rate'
+        ? 'Too many messages in a short time. Please wait a minute and try again.'
+        : 'Your message did not send. Please try again in a moment. What you typed is still in the form.');
+      track('form-error', { reason: err.message === 'rate' ? 'rate' : 'server' });
     }
   });
 }

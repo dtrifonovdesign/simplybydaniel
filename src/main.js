@@ -9,6 +9,8 @@ import { initCursor } from './cursor.js';
 import { initFeatures } from './features.js';
 import { initPerf } from './perf.js';
 import { scroll, updateScroll } from './scroll.js';
+import { initAnalytics } from './analytics.js';
+import { initNotice } from './notice.js';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const wide = window.matchMedia('(min-width: 860px)').matches;
@@ -25,6 +27,8 @@ body.classList.add('is-loading');
 
 // Quality tier: a guess from the device now, adjusted by the real frame rate while the page runs.
 const perf = initPerf({ wide, reduced });
+initAnalytics();
+initNotice();
 
 // Smooth scroll on capable desktops; phones and weaker machines keep native scrolling
 // (native scrolling is drawn by the browser itself, so it stays smooth even when the page is busy).
