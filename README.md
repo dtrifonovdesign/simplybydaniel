@@ -47,3 +47,9 @@ Testing helpers (add to the URL):
 - In the console, `__perf.stepDown()` or `__perf.set('low')` switches tier live. To reset a remembered step-down:
   `localStorage.removeItem('simply-tier')`.
 - Real-world check: Chrome DevTools > Performance > CPU throttling (4x or 6x slowdown) with `?perf`.
+
+## Case studies
+
+Each case study is its own page under `case-studies/<name>/index.html` (a second Vite entry, see `vite.config.js`), with its code in `src/<name>/` and its files in `public/case-studies/<name>/`.
+
+- **Briks** (`case-studies/briks/`): Simply × Briks intro, scroll-driven story, a 3D plank that travels the page (`src/briks/scene.js`) and a draggable 3D business card (`src/briks/card3d.js`). `node tools/prep-briks-case.mjs` gathers the logos, brief images, textures and social image from the design exports. Add a page to `public/sitemap.xml` when you add a case study.

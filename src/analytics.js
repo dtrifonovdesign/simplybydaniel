@@ -13,7 +13,7 @@ export function track(name, data) {
   else queue.push([name, data]);
 }
 
-export function initAnalytics() {
+export function initAnalytics({ sections = ['process', 'case-studies', 'about', 'contact'], prefix = 'view-' } = {}) {
   if (!WEBSITE_ID) return;
   const s = document.createElement('script');
   s.defer = true;
@@ -35,9 +35,9 @@ export function initAnalytics() {
     const seen = new Set();
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
-        if (en.isIntersecting && !seen.has(en.target.id)) { seen.add(en.target.id); track('view-' + en.target.id); }
+        if (en.isIntersecting && !seen.has(en.target.id)) { seen.add(en.target.id); track(prefix + en.target.id); }
       });
     }, { threshold: 0.35 });
-    ['process', 'case-studies', 'about', 'contact'].forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+    sections.forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
   }
 }
