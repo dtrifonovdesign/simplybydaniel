@@ -49,7 +49,7 @@ const MPD = { ...MP, y: 0.41, s: 0.95 };
 export const poses = {
   // Open on the right, tilted, halves just touching.
   hero: { x: 0.42, y: -0.24, s: 0.98, rx: 0.1, ry: -0.35, pull: 1.4, sit: 1,
-    m: { x: 0, y: 0.2, s: 1.0 } },
+    m: { x: 0, y: 0.36, s: 0.9 } },
 
   // The halves slide to opposite edges around "Brands, made simply."
   split: { x: 0, y: 0, s: 1.4, ry: 0,

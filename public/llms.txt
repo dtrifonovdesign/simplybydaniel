@@ -13,8 +13,12 @@ Six steps: Words, Research, Sketch, Digital design, Finish, System. A website fo
 ## Pages
 - [Home](https://simplybydaniel.com/): what Simply does, the process, about Daniel, how to get in touch
 - [Case study: Simply × Briks](https://simplybydaniel.com/case-studies/briks/): the full brand and website for Briks Contracting, a premium flooring company in Minnesota, step by step
+- [Free brand audit](https://simplybydaniel.com/audit/): a free one-minute, eight-question check of how a business shows up online (search, trust, clarity, consistency), with a score and a fix list
 - [Questions](https://simplybydaniel.com/faq/): what Simply is, what it designs, the process and how to start
 - [Privacy](https://simplybydaniel.com/privacy/)
+
+## Timeline
+A brand and website are built together and delivered within 2 weeks.
 
 ## Contact
 Use the contact form at https://simplybydaniel.com/#contact

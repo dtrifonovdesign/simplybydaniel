@@ -473,3 +473,14 @@ html.fx-off .sketch-overlay g, html.fx-off .arrow-overlay g { filter: none !impo
 .card--case .card__go i { font-style: normal; display: inline-block; transition: transform .35s var(--ease-out); }
 .card--case:hover .card__go i { transform: translateX(4px); }
 .case-list li > a.card--case:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+/* Conversion pass: assurance line under the hero button, and the three answers under the statement */
+.hero__assure { font-size: var(--fs-small); color: var(--text-muted); margin-top: calc(var(--space-2) * -1); }
+.answers { list-style: none; margin: var(--space-6) 0 0; padding: 0; display: grid; gap: var(--space-4); max-width: 880px; text-align: left; }
+.answers li { display: grid; gap: 4px; padding: var(--space-4) var(--space-5); border-radius: var(--radius-md); background: color-mix(in srgb, var(--sand) 72%, transparent); }
+.answers b { font-family: var(--font-heading); font-weight: 600; color: var(--text); font-size: var(--fs-h4); letter-spacing: -.01em; }
+.answers span { font-size: var(--fs-body); color: var(--text-body); }
+@media (min-width: 860px) { .answers { grid-template-columns: repeat(3, 1fr); } }
+.statement .btn { margin-top: var(--space-5); }
+.contact__inner .lead a { color: inherit; }
+.hero__copy .display { text-wrap: balance; }
