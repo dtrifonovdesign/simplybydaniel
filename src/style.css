@@ -533,9 +533,24 @@ html.gallery-open { overflow: hidden; }
 .gallery__dot[aria-current="true"] { background: var(--cream); border-color: var(--cream); }
 .gallery [hidden] { display: none !important; }
 @media (max-width: 700px) {
-  .gallery__main { grid-template-columns: minmax(0, 1fr); }
-  .gallery__arrow { display: none; }
-  .gallery__stage { aspect-ratio: 4 / 3; width: 100%; }
+  /* Phones: the gallery fills the screen and is anchored to the top, so it never re-centres or resizes between slides.
+     The Close button stays pinned, and the page scrolls inside the gallery if the caption is long. */
+  .gallery { width: 100vw; max-width: 100vw; height: 100vh; height: 100dvh; max-height: none; margin: 0; border-radius: 0; }
+  .gallery[open] { display: flex; flex-direction: column; gap: 14px; padding: 8px 16px calc(20px + env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; animation: none; scrollbar-width: none; }
+  .gallery[open]::-webkit-scrollbar { display: none; }
+  .gallery__bar { position: sticky; top: 0; z-index: 2; background: var(--ink); padding: 8px 0; flex: none; }
+  .gallery__close { min-height: 46px; padding: 0 24px; font-size: 1rem; }
+  .gallery__main { flex: none; grid-template-columns: 1fr 1fr; grid-template-areas: "stage stage" "prev next"; gap: 14px; }
+  .gallery__stage { grid-area: stage; aspect-ratio: 4 / 3; width: 100%; }
+  .gallery__prev { grid-area: prev; justify-self: start; }
+  .gallery__next { grid-area: next; justify-self: end; }
+  .gallery__arrow { width: 52px; height: 52px; display: grid; place-items: center; }
+  .gallery__cap { flex: none; }
+  .gallery__dots { flex: none; gap: 4px; }
+  .gallery__dot { width: 24px; height: 24px; background-clip: content-box; padding: 7px; border-width: 0; position: relative; }
+  .gallery__dot::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; border: 1.5px solid rgba(244, 238, 227, .6); }
+  .gallery__dot[aria-current="true"]::before { background: var(--cream); border-color: var(--cream); }
+  .gallery__dot[aria-current="true"] { background: transparent; }
 }
 @media (prefers-reduced-motion: reduce) { .gallery[open], .gallery__media { animation: none; } }
 
