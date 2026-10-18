@@ -6,6 +6,7 @@
 - Logos
 - Brand kits: colours, type and usage rules
 - Websites
+- Brand and website together, delivered within 2 weeks
 
 ## Process
 Six steps: Words, Research, Sketch, Digital design, Finish, System. A website follows when it is part of the project.
@@ -15,6 +16,7 @@ Six steps: Words, Research, Sketch, Digital design, Finish, System. A website fo
 - [Case study: Simply × Briks](https://simplybydaniel.com/case-studies/briks/): the full brand and website for Briks Contracting, a premium flooring company in Minnesota, step by step
 - [Free brand audit](https://simplybydaniel.com/audit/): a free one-minute, eight-question check of how a business shows up online (search, trust, clarity, consistency), with a score and a fix list
 - [Questions](https://simplybydaniel.com/faq/): what Simply is, what it designs, the process and how to start
+- [Full version of this file](https://simplybydaniel.com/llms-full.txt): services, the six-step process, case study, about Daniel and questions in one page
 - [Privacy](https://simplybydaniel.com/privacy/)
 
 ## Timeline

@@ -1,0 +1,47 @@
+# Simply by Daniel (full version)
+
+> Simply by Daniel is a brand and website design practice in Minnesota, run by Daniel. It makes logos, brand kits and websites for companies that want one clear identity. Tagline: "Brands, made simply." A brand and website built together are delivered within 2 weeks.
+
+Site: https://simplybydaniel.com/
+Short version of this file: https://simplybydaniel.com/llms.txt
+
+## What Simply does
+- Logo design: a custom logo, drawn by hand first, then built as exact vector artwork.
+- Brand kits: colours, typefaces, one clear message and usage rules, with every logo file a brand needs.
+- Website design: a custom-designed website that matches the brand.
+- Brand and website together: the identity and the website are designed as one system and delivered within 2 weeks.
+- Free brand audit: an eight-question, one-minute check of how a business shows up online. It gives a score and a fix list, and Daniel records a short walkthrough of the business's brand and site.
+
+## Who it is for
+Companies that want one clear identity: a logo, a brand kit and a website that all look like they come from the same place. Based in Minnesota. Projects from anywhere are welcome.
+
+## The process (six steps)
+1. Words. Before any brief begins, Daniel asks for some words that describe the company. Those words help form the brief.
+2. Research. He looks at similar brands and sees which elements could work well for the project. Those elements, plus his own flair, shape the brand.
+3. Sketch. Logos are drawn by hand, dozens of them. The best ideas are usually the simplest, and they show up on paper before they show up on a screen.
+4. Digital design. The sketches are refined digitally with exact geometry and better mock-ups.
+5. Finish. The final marks are cleaned up and exported in every format a brand needs: colour, reversed, one-colour and app icon (mark.svg, mark-reversed.svg, mono-ink.svg, app-icon.svg, favicon.ico, logo@2x.png and brand-kit.pdf).
+6. System. Colours, typefaces and one clear message. A tagline only if the brand needs one.
+
+## Work
+- Case study: Simply × Briks (https://simplybydaniel.com/case-studies/briks/). The complete brand identity and website for Briks Contracting, a premium flooring company in Minnesota, shown step by step: the brief, research, sketches, a mitred plank logo, typography, a colour system including gold, and a 3D website.
+- Concept redesigns (https://simplybydaniel.com/#case-studies): unofficial practice redesigns of brands Daniel admires, such as a Honda Passport homepage and a Coca-Cola homepage. They are not client work and are not affiliated with those companies.
+
+## About Daniel
+Daniel is a brand designer who builds identities by hand first and by machine second. At ten he started helping his mom with her websites and business cards, and that grew into learning real design skills, platforms and what it means to hold a brand. He has talked to business leaders and researched hundreds of websites and businesses, which led him to form Simply. His rules: by hand first, led by you, one clear brand identity.
+
+## Free brand audit
+https://simplybydaniel.com/audit/ asks eight plain questions in four areas: Found (does your site come up for your name, does ChatGPT describe you correctly), Trust (padlock and https, fast and sharp on a phone), Clear (what you do in five seconds, one clear tagline) and Consistent (matching logo, colours and fonts, a logo designed for you). It returns a score out of 100 and a fix list.
+
+## Questions and answers
+- What is Simply by Daniel? A brand and website design practice in Minnesota that makes logos, brand kits and websites for companies that want one clear identity.
+- How long does a brand and website take? A brand and website built together are delivered within 2 weeks.
+- What is in a brand kit? Colours, typefaces, one clear message and usage rules, with the logo files a brand needs.
+- What is the difference between a logo and a brand identity? A logo is one mark. A brand identity is the whole system around it: colours, typefaces, a clear message and rules for using them.
+- Where is Simply based? Minnesota. Projects from anywhere are welcome.
+- How do I start? Take the free brand audit at https://simplybydaniel.com/audit/ or send a message with the contact form at https://simplybydaniel.com/#contact.
+
+More questions and answers: https://simplybydaniel.com/faq/
+
+## Contact
+Use the contact form at https://simplybydaniel.com/#contact

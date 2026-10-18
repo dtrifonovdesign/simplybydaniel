@@ -38,7 +38,7 @@
         "description": "A brand and website design practice by Daniel: logos, brand kits and websites for companies that want one clear identity.",
         "keywords": "Simply | Brand and Website Design, website design near Chanhassen, website design Chanhassen MN, brand design Twin Cities",
         "image": "https://simplybydaniel.com/og-image.png", "logo": "https://simplybydaniel.com/favicon.svg",
-        "founder": { "@type": "Person", "name": "Daniel" },
+        "founder": { "@id": "https://simplybydaniel.com/#daniel" },
         "areaServed": [
           { "@type": "AdministrativeArea", "name": "Minneapolis–Saint Paul metropolitan area (Twin Cities), Minnesota" },
           { "@type": "City", "name": "Chanhassen, MN" }, { "@type": "City", "name": "Chaska, MN" }, { "@type": "City", "name": "Excelsior, MN" },
@@ -51,11 +51,23 @@
         "hasOfferCatalog": {
           "@type": "OfferCatalog", "name": "Simply services",
           "itemListElement": [
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Logo design" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand kits" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website design" } }
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Logo design", "description": "A custom logo drawn by hand first, then built as exact vector artwork in colour, reversed, one-colour and app-icon versions." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand kits", "description": "Colours, typefaces, one clear message and usage rules, delivered with every logo file a business needs." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website design", "description": "A custom-designed website that matches the brand." } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand and website together", "description": "A full brand identity and website designed as one system and delivered within 2 weeks." } },
+            { "@type": "Offer", "price": "0", "priceCurrency": "USD", "url": "https://simplybydaniel.com/audit/", "itemOffered": { "@type": "Service", "name": "Free brand audit", "description": "An eight-question, one-minute check of how a business shows up online, with a score and a fix list." } }
           ]
         }
+      },
+      {
+        "@type": "Person", "@id": "https://simplybydaniel.com/#daniel", "name": "Daniel", "url": "https://simplybydaniel.com/#about",
+        "jobTitle": "Brand and website designer", "worksFor": { "@id": "https://simplybydaniel.com/#business" },
+        "description": "Daniel designs logos, brand kits and websites by hand first and by machine second, and runs Simply."
+      },
+      {
+        "@type": "WebPage", "@id": "https://simplybydaniel.com/#webpage", "url": "https://simplybydaniel.com/", "name": "Simply | Brand and Website Design",
+        "isPartOf": { "@id": "https://simplybydaniel.com/#website" }, "about": { "@id": "https://simplybydaniel.com/#business" },
+        "primaryImageOfPage": "https://simplybydaniel.com/og-image.png", "dateModified": "2026-10-18"
       }
     ]
   }
@@ -334,6 +346,7 @@
         <span class="wordmark">Simply</span>
       </a>
       <p class="small">© 2026 Simply by Daniel · <a href="./audit/">Brand audit</a> · <a href="./faq/">Questions</a> · <a href="./privacy/">Privacy</a></p>
+      <p class="small footer__about">Simply is a brand and website design practice in Minnesota, run by Daniel. Logos, brand kits and websites, built together and delivered within 2 weeks.</p>
     </div>
   </footer>
 

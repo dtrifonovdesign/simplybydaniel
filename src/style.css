@@ -159,7 +159,8 @@ body.is-loading [data-intro] { opacity: 0 !important; transform: translateY(16px
 .contact__inner .lead { max-width: 40ch; }
 
 .footer { padding-block: var(--space-6); border-top: 1px solid var(--line); background: var(--bg); }
-.footer__inner { display: flex; align-items: center; justify-content: space-between; }
+.footer__inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3) var(--space-5); }
+.footer__about { flex-basis: 100%; max-width: 70ch; }
 .footer .small { font-size: var(--fs-small); color: var(--text-muted); }
 
 /* Fallback when WebGL is unavailable */
