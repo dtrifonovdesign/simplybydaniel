@@ -18,4 +18,11 @@ export const CONCEPTS = [
     type: 'image',
     src: './concepts/coca-cola/screenshot.webp',
   },
+  {
+    title: 'craigslist',
+    note: 'A warmer craigslist where every listing can say who had the item before. Unofficial concept, not affiliated with craigslist.',
+    type: 'page',
+    src: './concepts/craigslist/',
+    href: './concepts/craigslist/',
+  },
 ];
