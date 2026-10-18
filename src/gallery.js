@@ -49,7 +49,7 @@ export function initGallery({ getLenis, reduced, getCursor }) {
     note.textContent = c.note || '';
     count.textContent = (i + 1) + ' / ' + CONCEPTS.length;
     full.hidden = !c.href;
-    if (c.href) full.href = c.href;
+    if (c.href) { full.href = c.href; full.textContent = c.hrefLabel || 'Open full page ↗'; }
     dots.querySelectorAll('.gallery__dot').forEach((d, k) => { d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
   }
 

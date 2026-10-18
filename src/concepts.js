@@ -3,7 +3,7 @@
 //   type: 'image'  src = an image (.webp, .jpg, .png)
 //   type: 'page'   src = a page that opens inside the gallery
 // Keep paths starting with ./concepts/ . `note` is the small caption under the design, and `href` (optional)
-// adds an "Open full page" link.
+// adds an "Open full page" link (change its wording with `hrefLabel`).
 export const CONCEPTS = [
   {
     title: 'Honda Passport',
@@ -20,9 +20,10 @@ export const CONCEPTS = [
   },
   {
     title: 'craigslist',
-    note: 'A warmer craigslist where every listing can say who had the item before. Unofficial concept, not affiliated with craigslist.',
-    type: 'page',
-    src: './concepts/craigslist/',
+    note: 'Unofficial concept by Simply, not affiliated with craigslist. A warmer craigslist where every listing can say who had the item before. Open the page to try it.',
+    type: 'image',
+    src: './concepts/craigslist/screenshot.webp',
     href: './concepts/craigslist/',
+    hrefLabel: 'Open the interactive page ↗',
   },
 ];
