@@ -11,6 +11,7 @@ import { initPerf } from './perf.js';
 import { scroll, updateScroll } from './scroll.js';
 import { initAnalytics } from './analytics.js';
 import { initNotice } from './notice.js';
+import { initGallery } from './gallery.js';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const wide = window.matchMedia('(min-width: 860px)').matches;
@@ -68,7 +69,7 @@ if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(document.b
 document.fonts?.ready.then(remeasure);
 remeasure();
 
-initCursor({ fine, reduced });
+const cursor = initCursor({ fine, reduced });
 const sketch = createSketch();
 const digital = createDigital();
 const FILE_NAMES = ['app-icon.svg', 'mark.svg', 'mark-mono-ink.svg', 'mark-mono-cream.svg'];
@@ -81,6 +82,7 @@ const fileLabels = FILE_NAMES.map((name) => {
   return el;
 });
 features = initFeatures({ getLenis: () => lenis, reduced, getStage: () => stage });
+initGallery({ getLenis: () => lenis, reduced, getCursor: () => cursor });
 
 // Pointer (fine pointers only)
 if (fine) {

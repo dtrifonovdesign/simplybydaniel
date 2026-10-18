@@ -9,7 +9,7 @@ const publicFolders = {
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
       const url = (req.url || '').split('?')[0];
-      if (/^\/[\w-]+\/?$/.test(url)) {
+      if (/^\/[\w-]+(\/[\w-]+)*\/?$/.test(url)) {
         const dir = url.replace(/\/$/, '');
         if (fs.existsSync(path.resolve('public' + dir + '/index.html'))) req.url = dir + '/index.html';
       }

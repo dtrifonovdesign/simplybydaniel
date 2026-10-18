@@ -53,3 +53,7 @@ Testing helpers (add to the URL):
 Each case study is its own page under `case-studies/<name>/index.html` (a second Vite entry, see `vite.config.js`), with its code in `src/<name>/` and its files in `public/case-studies/<name>/`.
 
 - **Briks** (`case-studies/briks/`): Simply × Briks intro, scroll-driven story, a 3D plank that travels the page (`src/briks/scene.js`) and a draggable 3D business card (`src/briks/card3d.js`). `node tools/prep-briks-case.mjs` gathers the logos, brief images, textures and social image from the design exports. Add a page to `public/sitemap.xml` when you add a case study.
+
+## Concept work gallery
+
+The "Concept work" panel next to the case studies opens a carousel (`src/gallery.js`). The designs live in the list in `src/concepts.js`: put the files in `public/concepts/<name>/` and add an item (`type` is `video`, `image` or `page`, plus `title` and `note`). The card on the home page updates its count by itself. Concept pages are marked `noindex`.

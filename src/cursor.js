@@ -11,8 +11,18 @@ export function initCursor({ fine, reduced }) {
   dot.className = 'cursor-dot';
   ring.setAttribute('aria-hidden', 'true');
   dot.setAttribute('aria-hidden', 'true');
+  // Popovers live in the browser's top layer, so the cursor can be raised above a modal dialog (the gallery)
+  ring.setAttribute('popover', 'manual');
+  dot.setAttribute('popover', 'manual');
   document.body.append(ring, dot);
   document.documentElement.classList.add('has-cursor');
+  const raise = () => {
+    for (const el of [ring, dot]) {
+      try { el.hidePopover(); el.showPopover(); } catch { /* no popover support: the gallery shows the normal cursor instead */ }
+    }
+  };
+  raise();
+  ring.raise = raise;
 
   let tx = -100, ty = -100, dx = -100, dy = -100, rx = -100, ry = -100, vx = 0, vy = 0;
   let hover = 0, hoverT = 0, down = 0, downT = 0, vis = 0, visT = 0, text = 0, textT = 0;

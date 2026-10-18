@@ -142,7 +142,7 @@
 
     <!-- Case studies -->
     <section class="cases section" id="case-studies" data-pose="cases">
-      <div class="container">
+      <div class="container cases__grid">
         <div class="half">
           <p class="eyebrow reveal">Case studies</p>
           <h2 class="reveal" style="--i:1">The first project is live.</h2>
@@ -153,8 +153,38 @@
             <li class="card reveal" style="--i:5"><span class="eyebrow">Case study 03</span><b>Coming soon</b></li>
           </ul>
         </div>
+        <aside class="concepts" aria-labelledby="concepts-h">
+          <p class="eyebrow reveal">Practice work</p>
+          <h2 class="reveal" id="concepts-h" style="--i:1">Concept Redesigns</h2>
+          <p class="lead reveal" style="--i:2">Unofficial takes on brands I admire, made to try out ideas.</p>
+          <button class="concept-open reveal" style="--i:3" type="button" id="open-gallery" aria-haspopup="dialog">
+            <span class="concept-open__thumbs" aria-hidden="true">
+              <span class="concept-open__t concept-open__t--honda"><img src="./concepts/honda/poster.webp" alt="" width="1000" height="625" loading="lazy" decoding="async" /></span>
+              <span class="concept-open__t concept-open__t--coke"><img src="./concepts/coca-cola/screenshot.webp" alt="" width="1600" height="1012" loading="lazy" decoding="async" /></span>
+            </span>
+            <span class="concept-open__meta"><b>Open the gallery</b><span class="card__meta" id="concept-count">2 designs</span></span>
+            <i class="concept-open__go" aria-hidden="true">→</i>
+          </button>
+        </aside>
       </div>
     </section>
+
+    <dialog class="gallery" id="gallery" aria-label="Concept work gallery" data-lenis-prevent>
+      <div class="gallery__bar">
+        <p class="gallery__count" aria-live="polite"></p>
+        <button class="gallery__close" type="button" aria-label="Close the gallery">Close</button>
+      </div>
+      <div class="gallery__main">
+        <button class="gallery__arrow gallery__prev" type="button" aria-label="Previous design"><span aria-hidden="true">←</span></button>
+        <div class="gallery__stage" aria-live="polite"></div>
+        <button class="gallery__arrow gallery__next" type="button" aria-label="Next design"><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="gallery__cap">
+        <div><h3 class="gallery__title"></h3><p class="gallery__note"></p></div>
+        <a class="gallery__full" href="#" target="_blank" rel="noopener">Open full page ↗</a>
+      </div>
+      <div class="gallery__dots" role="group" aria-label="Choose a design"></div>
+    </dialog>
 
     <!-- Process -->
     <section class="process" id="process">

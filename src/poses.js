@@ -84,7 +84,7 @@ export const poses = {
     from: { pose: 'p5', a: 1 } },
 
   // Case studies: the halves sit apart like an open book, waiting.
-  cases: { x: 0.62, y: 0.05, s: 0.85, ry: TAU + 0.25,
+  cases: { x: 0.62, y: 0.05, s: 0.85, ry: TAU + 0.25, a: 0.3,
     tx: 0.7, ty: 0.95, try: -0.6, bx: -0.2, by: -0.95, bry: 0.6,
     m: { x: 0, y: 0.55, s: 1, a: 0.22 } },
 
