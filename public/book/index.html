@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Book a Call | Simply by Daniel</title>
+  <meta name="description" content="Book a call with Daniel. Leave your number and company name and you will hear back within 24 hours." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://simplybydaniel.com/book/" />
+  <meta name="theme-color" content="#F4EEE3" />
+  <link rel="icon" href="https://simplybydaniel.com/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="https://simplybydaniel.com/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="https://simplybydaniel.com/favicon-192.png" />
+  <link rel="apple-touch-icon" href="https://simplybydaniel.com/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Simply by Daniel" />
+  <meta property="og:url" content="https://simplybydaniel.com/book/" />
+  <meta property="og:title" content="Book a Call | Simply by Daniel" />
+  <meta property="og:description" content="Leave your number and company name. Daniel calls back within 24 hours." />
+  <meta property="og:image" content="https://simplybydaniel.com/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Figtree:wght@400;500;600&display=swap" />
+  <style>
+    :root {
+      --cream: #F4EEE3; --sand: #EBE3D3; --ink: #1A1816; --ink-soft: #3D3832; --stone: #5C554B; --brass: #B8935A;
+      --line: rgba(26, 24, 22, .14);
+      --r-md: 16px; --r-lg: 24px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; background: var(--cream); }
+    body { margin: 0; min-height: 100svh; color: var(--ink-soft); font: 400 1.0625rem/1.6 "Figtree", system-ui, sans-serif; display: flex; flex-direction: column; }
+    h1, h2, h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; color: var(--ink); margin: 0; line-height: 1.08; letter-spacing: -.025em; font-weight: 600; }
+    h1 { font-size: clamp(2.4rem, 1.2rem + 5.4vw, 4.2rem); letter-spacing: -.035em; }
+    p { margin: 0; }
+    a { color: var(--ink); text-underline-offset: 3px; }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 12px; }
+    .wrap { width: min(680px, 100% - 40px); margin-inline: auto; }
+    .eyebrow { font: 600 .75rem/1 "Figtree", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--stone); }
+    [hidden] { display: none !important; }
+
+    .top { padding: 22px 0; }
+    .home { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font: 600 1.25rem/1 "Bricolage Grotesque", system-ui, sans-serif; }
+    .home svg { width: 28px; height: 28px; }
+    main { flex: 1; display: grid; align-content: start; padding-bottom: 72px; }
+    .foot { padding: 24px 0 40px; font-size: .8125rem; color: var(--stone); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 16px 30px; border: 0; border-radius: 999px; background: var(--ink); color: var(--cream); font: 600 1.0625rem/1 "Figtree", sans-serif; cursor: pointer; text-decoration: none; transition: transform .2s var(--ease), background-color .2s var(--ease); }
+    .btn:hover { transform: translateY(-1px); background: var(--ink-soft); }
+    .btn:disabled { opacity: .6; cursor: default; transform: none; }
+
+    /* The mark: two halves. On the confirmation screen they close together. */
+    .stage { height: clamp(150px, 26vw, 200px); width: 100%; display: grid; place-items: center start; perspective: 700px; margin-bottom: 8px; }
+    .tilt { margin-left: -24px; width: 120px; height: 120px; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .25s var(--ease); }
+    .sway { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; animation: sway 7s ease-in-out infinite; }
+    .half { position: absolute; inset: 0; transform-style: preserve-3d; }
+    .half svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .half--a { transform: translate3d(-16px, -7px, 0); }
+    .half--b { transform: translate3d(16px, 7px, 0); }
+    .half--a, .half--b { transition: transform 1.3s var(--ease); }
+    .is-closed .half--a, .is-closed .half--b { transform: none; }
+    @keyframes sway { 0%, 100% { transform: rotateY(-16deg) rotateX(5deg); } 50% { transform: rotateY(16deg) rotateX(-3deg); } }
+    .glow { position: absolute; inset: -30px; border-radius: 50%; background: radial-gradient(closest-side, rgba(184, 147, 90, .35), transparent); opacity: 0; transform: scale(.6); transition: opacity 1s var(--ease) .5s, transform 1.4s var(--ease) .5s; }
+    .is-closed .glow { opacity: 1; transform: scale(1); }
+
+    .screen { display: grid; gap: 22px; justify-items: start; padding-top: clamp(8px, 3vh, 28px); }
+    .screen > * { animation: rise .6s var(--ease) both; }
+    .lead { font-size: 1.25rem; color: var(--ink-soft); max-width: 40ch; }
+    .fine { font-size: .875rem; color: var(--stone); }
+
+    .gate { width: 100%; padding: 24px; border-radius: var(--r-lg); background: var(--ink); color: rgba(244, 238, 227, .85); display: grid; gap: 14px; }
+    .field { display: grid; gap: 6px; }
+    .field span { font-size: .875rem; font-weight: 500; color: var(--cream); }
+    .field input { font: inherit; font-size: 16px; color: var(--ink); background: var(--cream); border: 1.5px solid transparent; border-radius: 14px; padding: 14px 16px; width: 100%; }
+    .field input:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+    .field.is-error input { border-color: #d9826f; }
+    .field small { color: #f1b3a5; font-size: .8125rem; }
+    .field small:empty { display: none; }
+    .gate .btn { background: var(--cream); color: var(--ink); width: 100%; }
+    .gate .btn:hover { background: #fff; }
+    .gate .fine { color: rgba(244, 238, 227, .6); text-align: center; }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    .status { min-height: 1.3em; font-size: .875rem; color: #f1b3a5; text-align: center; }
+    .alt { font-size: .9375rem; color: var(--stone); }
+
+    .next { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; width: 100%; }
+    .next li { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border-radius: var(--r-md); background: var(--sand); color: var(--ink); font-weight: 500; }
+    .next li b { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--cream); display: grid; place-items: center; font: 600 .875rem/1 "Figtree", sans-serif; }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="home" href="/" aria-label="Simply home">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M48 10H75A5 5 0 0 1 80 15V41A5 5 0 0 1 75 46H48A18 18 0 0 1 48 10Z" fill="#1A1816" /><path d="M52 54H25A5 5 0 0 0 20 59V85A5 5 0 0 0 25 90H52A18 18 0 0 0 52 54Z" fill="#B8935A" /></svg>
+        Simply
+      </a>
+    </div>
+  </header>
+
+  <main class="wrap" id="app" aria-live="polite">
+    <noscript><p class="lead">This form needs JavaScript. Please turn it on, or message me on <a href="https://www.linkedin.com/company/143992015">LinkedIn</a>.</p></noscript>
+
+    <section class="screen" id="ask">
+      <div class="stage" aria-hidden="true"><div class="tilt" id="tilt"><div class="sway" id="sway"></div></div></div>
+      <p class="eyebrow">Book a call</p>
+      <h1>Let’s talk about your brand.</h1>
+      <p class="lead">Leave your number and your company name. I will call you back within 24 hours.</p>
+      <form class="gate" id="gate" novalidate data-endpoint="https://formsubmit.co/ajax/89e2eb29402e4aeecfc7b4837f99bb9a">
+        <label class="field"><span>Company name</span><input name="business" type="text" autocomplete="organization" required /><small></small></label>
+        <label class="field"><span>Phone number</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required /><small></small></label>
+        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <button class="btn" type="submit" id="send">Request my call</button>
+        <p class="status" id="status" role="status"></p>
+        <p class="fine">Only used to call you back. See the <a href="/privacy/" style="color:inherit">privacy policy</a>.</p>
+      </form>
+      <p class="alt">Rather not talk yet? <a href="/audit/">Take the free brand audit</a> first.</p>
+    </section>
+
+    <section class="screen" id="done" hidden>
+      <div class="stage" aria-hidden="true"><div class="tilt" id="tilt2"><div class="sway" id="sway2"></div></div></div>
+      <p class="eyebrow">Request received</p>
+      <h1>You’ve taken the first step!</h1>
+      <p class="lead">We’ll be in touch within 24 hours.</p>
+      <ol class="next" aria-label="What happens next">
+        <li><b>1</b><span>I look at your company and what you do.</span></li>
+        <li><b>2</b><span>I call the number you left.</span></li>
+        <li><b>3</b><span>We plan your brand and website, live in 2 weeks.</span></li>
+      </ol>
+      <p class="alt">While you wait, <a href="/audit/">take the free brand audit</a> or <a href="/">look around the site</a>.</p>
+    </section>
+  </main>
+
+  <footer class="wrap foot">© 2026 Simply by Daniel · Brand and website, live in 2 weeks · <a href="/">Back to Simply</a></footer>
+
+  <script>
+  (function () {
+    var $ = function (s, r) { return (r || document).querySelector(s); };
+    var track = function (n, d) { try { window.umami && window.umami.track(n, d); } catch (e) {} };
+    var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* the mark, built from stacked layers so it has depth */
+    var A = 'M48 10H75A5 5 0 0 1 80 15V41A5 5 0 0 1 75 46H48A18 18 0 0 1 48 10Z', B = 'M52 54H25A5 5 0 0 0 20 59V85A5 5 0 0 0 25 90H52A18 18 0 0 0 52 54Z';
+    function mark(sway) {
+      var N = 9, NS = 'http://www.w3.org/2000/svg';
+      var glow = document.createElement('div'); glow.className = 'glow'; sway.appendChild(glow);
+      [['half--a', A, '#1A1816'], ['half--b', B, '#B8935A']].forEach(function (h) {
+        var half = document.createElement('div'); half.className = 'half ' + h[0];
+        for (var i = 0; i < N; i++) {
+          var s = document.createElementNS(NS, 'svg');
+          s.setAttribute('viewBox', '0 0 100 100'); s.setAttribute('aria-hidden', 'true');
+          s.style.transform = 'translateZ(' + ((i - (N - 1) / 2) * 3) + 'px)';
+          if (i < N - 1) s.style.filter = 'brightness(' + (0.55 + 0.4 * (i / N)) + ')';
+          var p = document.createElementNS(NS, 'path'); p.setAttribute('d', h[1]); p.setAttribute('fill', h[2]);
+          s.appendChild(p); half.appendChild(s);
+        }
+        sway.appendChild(half);
+      });
+    }
+    mark($('#sway')); mark($('#sway2'));
+    if (reduced) {
+      document.querySelectorAll('.sway').forEach(function (s) { s.style.animation = 'none'; s.style.transform = 'rotateY(-14deg) rotateX(4deg)'; });
+    } else {
+      addEventListener('pointermove', function (e) {
+        var ry = ((e.clientX / innerWidth - .5) * 40) + 'deg', rx = (-(e.clientY / innerHeight - .5) * 30) + 'deg';
+        document.querySelectorAll('.tilt').forEach(function (t) { t.style.setProperty('--ry', ry); t.style.setProperty('--rx', rx); });
+      }, { passive: true });
+    }
+
+    /* the form */
+    var gate = $('#gate');
+    function flag(input, msg) { var f = input.closest('.field'); f.classList.toggle('is-error', !!msg); f.querySelector('small').textContent = msg || ''; input.setAttribute('aria-invalid', msg ? 'true' : 'false'); }
+    gate.addEventListener('input', function (e) { if (e.target.getAttribute('aria-invalid') === 'true') flag(e.target, ''); });
+    gate.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (gate.elements.company.value) return;
+      var biz = gate.elements.business.value.trim(), phone = gate.elements.phone.value.trim(), bad = null;
+      var eb = biz ? '' : 'Please add your company name.'; flag(gate.elements.business, eb); if (eb) bad = gate.elements.business;
+      var ep = phone.replace(/\D/g, '').length >= 7 ? '' : 'Please add a phone number I can reach you on.'; flag(gate.elements.phone, ep); if (ep && !bad) bad = gate.elements.phone;
+      var status = $('#status'); status.textContent = '';
+      if (bad) { bad.focus(); return; }
+      var btn = $('#send'); btn.disabled = true; btn.textContent = 'Sending…';
+      fetch(gate.dataset.endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ _subject: 'Call request: ' + biz + ' (' + phone + ')', _template: 'table', _captcha: 'false', company_name: biz, phone: phone, source: 'Book a call page' })
+      }).then(function (r) { if (!r.ok) throw new Error('bad'); return r.json(); }).then(function (j) {
+        if (j && j.success === 'false') throw new Error('bad');
+        track('call-request');
+        $('#ask').hidden = true; $('#done').hidden = false;
+        scrollTo(0, 0);
+        var done = $('#done');
+        if (reduced) done.classList.add('is-closed'); else setTimeout(function () { done.classList.add('is-closed'); }, 250);
+        $('#done h1').setAttribute('tabindex', '-1'); $('#done h1').focus({ preventScroll: true });
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = 'Request my call';
+        status.innerHTML = 'That did not send. Please try again, or call me at <a href="tel:+16123249965" style="color:inherit;font-weight:600">612-324-9965</a>.';
+      });
+    });
+  })();
+  </script>
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="00201639-cace-48ee-b419-05deec5ca56b" data-domains="simplybydaniel.com" data-do-not-track="true"></script>
+</body>
+</html>
