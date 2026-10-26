@@ -142,7 +142,9 @@ export function skeletonLab(app, { THREE, makeStage, mat, label, COL }) {
   let selected = null, colorMode = true;
   function paint() { bones.forEach(b => { const u = b.userData; u.mat.color.set(colorMode ? (u.axial ? 0xe9e0cc : 0xc9a468) : 0xe4d9c2); u.mat.emissive.set(0x000000); });
     if (selected) selected.userData.mat.emissive.set(0x6a5326); }
-  function highlight(name) { bones.forEach(b => { if (b.userData.quizName === name) b.userData.mat.emissive.set(0x8a6a2a); }); }
+  let pulse = null, flash = null;
+  function highlight(name, ms = 3500) { pulse = { name, until: performance.now() + ms }; }
+  function wrongFlash(b) { flash = { b, until: performance.now() + 700 }; }
   function select(b) {
     selected = b; paint();
     if (!b) return;
@@ -173,11 +175,11 @@ export function skeletonLab(app, { THREE, makeStage, mat, label, COL }) {
     quizState = { order: shuffle(BONE_NAMES).slice(0, 10), i: 0, right: 0, tries: 0 }; select(null); $('#tag').textContent = 'Quiz'; nextQ();
   }
   function nextQ() {
-    const q = quizState; paint();
+    const q = quizState; pulse = null; bones.forEach(b => b.userData.mat.emissiveIntensity = 1); paint();
     if (q.i >= q.order.length) { $('#quiz').innerHTML = `<div class="score" style="font-size:44px">${q.right}/${q.order.length}</div><p class="small">first-try taps correct</p><button class="btn" id="qs">Again</button>`; $('#qs').onclick = startQuiz; quizState = null; $('#tag').textContent = 'Tap a bone'; return; }
     const name = q.order[q.i]; q.tries = 0;
     $('#quiz').innerHTML = `<div class="eyebrow">${q.i + 1} of ${q.order.length}</div><h3>Tap the ${esc(name)}</h3><p class="small muted" id="fb">&nbsp;</p><button class="btn ghost sm" id="skip">Show me</button>`;
-    $('#skip').onclick = () => { highlight(name); q.tries = 9; $('#fb').textContent = 'That is the highlighted bone. Tap anywhere to continue.'; q.reveal = true; };
+    $('#skip').onclick = () => { highlight(name, 60000); q.tries = 9; $('#fb').textContent = 'That is the highlighted bone. Tap anywhere to continue.'; q.reveal = true; };
     $('#tag').textContent = `Find: ${name}`;
   }
   function answer(b) {
@@ -185,12 +187,17 @@ export function skeletonLab(app, { THREE, makeStage, mat, label, COL }) {
     if (q.reveal) { q.reveal = false; q.i++; return nextQ(); }
     if (!b) return;
     if (b.userData.quizName === name) { if (q.tries === 0) q.right++; q.i++; $('#tag').textContent = 'Correct'; nextQ(); }
-    else { q.tries++; $('#fb').textContent = `That is the ${b.userData.display === b.userData.quizName ? b.userData.quizName : b.userData.display + ' (' + b.userData.quizName + ')'}. Try again.`; }
+    else { q.tries++; wrongFlash(b); highlight(name); $('#fb').textContent = `That is the ${b.userData.display === b.userData.quizName ? b.userData.quizName : b.userData.display + ' (' + b.userData.quizName + ')'}. The correct bone is glowing. Try again.`; }
   }
   $('#qs').onclick = startQuiz;
 
   // slow idle turn until touched
   let idle = true; S.dom.addEventListener('pointerdown', () => idle = false);
-  S.ticks.push(dt => { if (idle) root.rotation.y += dt * .25; });
+  S.ticks.push(dt => { if (idle) root.rotation.y += dt * .25;
+    const now = performance.now();
+    if (pulse) { const on = now < pulse.until, k = .5 + .5 * Math.sin(now / 130);
+      bones.forEach(b => { if (b.userData.quizName === pulse.name) { b.userData.mat.emissive.set(0xffc84a); b.userData.mat.emissiveIntensity = on ? .6 + k * 1.2 : 1; } });
+      if (!on) { bones.forEach(b => b.userData.mat.emissiveIntensity = 1); pulse = null; paint(); } }
+    if (flash) { if (now < flash.until) { flash.b.userData.mat.emissive.set(0xff2d2d); } else { flash = null; paint(); if (pulse) pulse.until = pulse.until; } } });
   return () => S.dispose();
 }
