@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vindra wind energy concept | Simply by Daniel</title>
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="https://simplybydaniel.com/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="https://simplybydaniel.com/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #e4e8e3;        /* mist */
+    --ink: #0f1b1c;
+    --muted: #61706b;
+    --signal: #ff5a1f;    /* the one loud colour */
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 5;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px; font-size: 12px;
+    opacity: 0; animation: fade .8s ease 2.2s forwards;
+  }
+  .logo { display: flex; align-items: center; gap: 9px; font-weight: 500; font-size: 14px; letter-spacing: -.01em; }
+  .logo svg { width: 18px; height: 18px; }
+  nav ul { display: flex; align-items: center; gap: 28px; list-style: none; padding: 0; color: var(--muted); }
+  nav a { color: inherit; text-decoration: none; transition: color .2s; }
+  nav a:hover { color: var(--ink); }
+  nav .pill { color: var(--ink); border: 1px solid var(--ink); padding: 7px 12px; }
+
+  /* ---------- layout ---------- */
+  .hero { position: relative; height: 100vh; min-height: 560px; overflow-x: clip; }
+  .scene { position: absolute; left: 0; top: 0; width: 50%; height: 100%; z-index: 1; clip-path: inset(-60vh -60vw 0 -60vw); transform-origin: 50% 100%; animation: settle 4.2s cubic-bezier(.2,.7,.2,1) both; }
+
+  /* everything inside .plate shares the photo's 1333 x 2000 coordinate space */
+  .plate {
+    position: absolute; left: 50%; bottom: 0; height: 84%;
+    aspect-ratio: 1333 / 2000; transform: translateX(-50%);
+  }
+  .plate > * { position: absolute; }
+  .plate svg { overflow: visible; }
+  .layer { pointer-events: none; user-select: none; -webkit-user-drag: none; }
+
+  .tower-wrap { left: 47%; top: 24.7%; width: 14.5%; height: 75.3%; transform: translateY(100%); --b: 11%; will-change: transform; }
+  .tower-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* --b is the depth of the wireframe band below the roof; it shrinks to nothing as the photo resolves */
+  .t-photo { -webkit-mask-image: linear-gradient(to bottom, transparent var(--b), #000 calc(var(--b) + 7%));
+                     mask-image: linear-gradient(to bottom, transparent var(--b), #000 calc(var(--b) + 7%)); }
+  .t-wire  { -webkit-mask-image: linear-gradient(to bottom, #000 var(--b), transparent calc(var(--b) + 7%));
+                     mask-image: linear-gradient(to bottom, #000 var(--b), transparent calc(var(--b) + 7%)); }
+  .scan { left: -8%; width: 116%; top: 100%; height: 0; z-index: 3; opacity: 0; }
+  .scan::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+                  background: linear-gradient(90deg, transparent, var(--signal) 30%, var(--signal) 70%, transparent);
+                  box-shadow: 0 0 18px 2px rgba(255,90,31,.55); }
+  .scan span { position: absolute; left: 4%; top: -22px; font: 500 10px/1 'Inter', sans-serif; letter-spacing: .14em;
+               color: var(--signal); white-space: nowrap; text-transform: uppercase; }
+  .hub { inset: 0; width: 100%; height: 100%; opacity: 0; transform: scale(.4); transform-origin: 44.26% 26.25%;
+         animation: pop .7s cubic-bezier(.2,.8,.2,1) 3.5s forwards; }
+  .rotor { inset: 0; width: 100%; height: 100%; transform-origin: 44.26% 26.25%; will-change: transform, filter; }
+  .arm { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 44.26% 26.25%; }
+  .arm img { position: absolute; left: 35.93%; top: 28.5%; width: 11.55%; height: 34.75%; opacity: 0; will-change: transform, opacity; }
+  .arm:nth-child(1) { transform: rotate(0deg); }
+  .arm:nth-child(2) { transform: rotate(120deg); }
+  .arm:nth-child(3) { transform: rotate(240deg); }
+  .ring { fill: none; stroke: var(--signal); stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .ring.r1 { animation: shock 1.3s cubic-bezier(.1,.7,.2,1) 4.2s; }
+  .ring.r2 { animation: shock 1.3s cubic-bezier(.1,.7,.2,1) 4.45s; }
+  .ring.r3 { animation: shock 1.9s cubic-bezier(.1,.7,.2,1) 4.7s; stroke-width: 4; }
+
+  .clouds { left: -40%; top: 0; width: 180%; height: 100%; }
+  .cloud { opacity: 0; animation: fade 2.4s ease 2.8s forwards; }
+  .cloud > g { animation: drift 46s ease-in-out infinite alternate; }
+  .cloud.b > g { animation-duration: 62s; animation-direction: alternate-reverse; }
+
+  #fakecursor { position: fixed; left: 0; top: 0; z-index: 9; width: 22px; height: 22px; margin: -3px 0 0 -3px; opacity: 0; pointer-events: none;
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M3 2l14 7.5-6 1.8-2.6 5.7z' fill='%230f1b1c' stroke='%23fff' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat; }
+
+  /* ---------- wind streaks (strength follows rotor speed) ---------- */
+  .wind { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: 0; }
+  .streak { position: absolute; left: -40vw; height: 1px; width: var(--w);
+            background: linear-gradient(90deg, transparent, rgba(15,27,28,.42), transparent);
+            animation: streak var(--dur) linear var(--delay) infinite; }
+  @keyframes streak { to { transform: translateX(175vw); } }
+
+  /* ---------- copy ---------- */
+  .copy { z-index: 2; position: absolute; left: 53%; top: 50%; transform: translateY(-58%); width: min(470px, 40%); }
+  h1 { font-weight: 300; letter-spacing: -0.035em; line-height: 1.03; font-size: clamp(34px, 3.8vw, 62px); }
+  h1 .ln { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+  h1 .w { display: inline-block; transform: translateY(115%); filter: blur(8px); opacity: 0;
+          animation: word 1s cubic-bezier(.2,.75,.2,1) calc(1.7s + var(--i) * .075s) forwards; }
+  h1 em { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -.02em; }
+  p.sub { margin-top: 22px; max-width: 340px; font-size: 12px; line-height: 1.65; color: var(--muted); opacity: 0; animation: fade .8s ease 2.7s forwards; }
+  .btns { display: flex; gap: 8px; margin-top: 22px; opacity: 0; animation: fade .8s ease 2.9s forwards; }
+  .btn {
+    font: 500 11.5px/1 'Inter', sans-serif; padding: 12px 15px; border: 1px solid var(--ink);
+    background: transparent; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    transition: transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .btn.solid { background: var(--ink); color: var(--bg); }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.solid:hover { background: var(--signal); border-color: var(--signal); color: #fff; }
+  .btn:not(.solid):hover { background: var(--ink); color: var(--bg); }
+  .btn svg { width: 12px; height: 12px; }
+
+  .stats { display: flex; gap: 28px; margin-top: 34px; padding-top: 18px; border-top: 1px solid rgba(15,27,28,.14);
+           opacity: 0; animation: fade .8s ease 3.1s forwards; }
+  .note { margin-top: 18px; font-size: 10.5px; line-height: 1.5; color: var(--muted); opacity: 0; animation: fade .8s ease 3.3s forwards; }
+  .stats b { display: block; font-weight: 400; font-size: 20px; letter-spacing: -.02em; }
+  .stats span { font-size: 10.5px; color: var(--muted); }
+
+  /* ---------- live rotor readout + clean energy counter ---------- */
+  .live { position: absolute; right: 40px; bottom: 30px; width: 262px; font-size: 11px; color: var(--muted);
+          opacity: 0; animation: fade .8s ease 4.8s forwards; }
+  .card { border: 1px solid rgba(15,27,28,.2); background: rgba(228,232,227,.62); backdrop-filter: blur(6px); color: var(--ink); }
+  .live .row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid rgba(15,27,28,.12); }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); animation: pulse 1.8s ease-in-out infinite; flex: none; }
+  .live .sep { width: 1px; height: 12px; background: rgba(15,27,28,.2); }
+  .live b { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .energy { padding: 12px 14px 12px; }
+  .energy .lbl { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .energy .val { display: flex; align-items: baseline; gap: 6px; margin-top: 6px; }
+  .energy .val b { font-weight: 300; font-size: 30px; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .energy .val u { text-decoration: none; font-size: 12px; color: var(--signal); font-weight: 500; }
+  .meter { height: 2px; margin-top: 12px; background: rgba(15,27,28,.12); }
+  .meter i { display: block; width: 100%; height: 100%; background: var(--signal); transform-origin: 0 50%; transform: scaleX(0); border-radius: 0; animation: none; }
+  .energy .co2 { display: flex; justify-content: space-between; margin-top: 10px; font-size: 10.5px; }
+  .live small { display: block; margin-top: 8px; font-size: 10px; text-align: right; }
+
+  @keyframes word  { to { transform: none; filter: blur(0); opacity: 1; } }
+  @keyframes shock { 0% { opacity: .9; transform: scale(.9); } 100% { opacity: 0; transform: scale(7); } }
+  @keyframes settle { from { transform: scale(1.12); } to { transform: none; } }
+  @keyframes fade  { to { opacity: 1; } }
+  @keyframes pop   { to { opacity: 1; transform: none; } }
+  @keyframes drift { from { transform: translateX(-30px); } to { transform: translateX(30px); } }
+  @keyframes pulse { 50% { opacity: .35; transform: scale(.8); } }
+
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; animation-delay: 0s !important; } }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 800px) {
+    body { overflow: auto; }
+    nav { padding: 16px 20px; }
+    nav ul li:not(:last-child) { display: none; }
+    .hero { height: auto; min-height: 100vh; padding-bottom: 80px; }
+    .scene { position: relative; width: 100%; height: 66vh; }
+    .copy { position: relative; left: 0; top: 0; transform: none; width: auto; padding: 8px 20px 24px; }
+    h1 { font-size: 40px; }
+    p.sub { font-size: 13px; max-width: 360px; }
+    .btn { font-size: 12px; padding: 13px 16px; }
+    .stats { gap: 20px; }
+    .live { position: relative; right: auto; bottom: auto; margin: 8px 20px 0; width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="9" r="1.6" fill="currentColor" stroke="none"/><path d="M9 7.4V1.2M10.4 9.8l5.4 3.1M7.6 9.8l-5.4 3.1"/></svg>
+    Vindra
+  </div>
+  <ul>
+    <li><a href="#">Farms</a></li>
+    <li><a href="#">Approach</a></li>
+    <li><a href="#">Shares</a></li>
+    <li><a href="#">Journal</a></li>
+    <li><a href="#" class="pill">Investor access</a></li>
+  </ul>
+</nav>
+
+<main class="hero">
+  <div class="scene" aria-hidden="true">
+    <div class="plate">
+
+      <svg class="clouds layer" viewBox="0 0 2400 2000" preserveAspectRatio="none">
+        <defs>
+          <filter id="puff" x="-30%" y="-40%" width="160%" height="180%">
+            <feTurbulence type="fractalNoise" baseFrequency=".006 .011" numOctaves="5" seed="11" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="150" result="d"/>
+            <feGaussianBlur in="d" stdDeviation="16"/>
+          </filter>
+        </defs>
+        <g class="cloud" filter="url(#puff)"><g>
+          <ellipse cx="560" cy="1180" rx="340" ry="80" fill="rgba(70,84,80,.30)"/>
+          <ellipse cx="660" cy="1130" rx="240" ry="62" fill="rgba(70,84,80,.20)"/>
+        </g></g>
+        <g class="cloud b" filter="url(#puff)"><g>
+          <ellipse cx="1700" cy="1760" rx="520" ry="120" fill="rgba(70,84,80,.34)"/>
+          <ellipse cx="1560" cy="1710" rx="360" ry="90" fill="rgba(70,84,80,.22)"/>
+          <ellipse cx="1900" cy="1800" rx="320" ry="90" fill="rgba(70,84,80,.26)"/>
+        </g></g>
+      </svg>
+
+      <div class="tower-wrap layer" id="towerWrap">
+        <img class="t-photo" src="assets/tower-nacelle.png" alt="">
+        <img class="t-wire" src="assets/tower-wire.png" alt="">
+      </div>
+      <div class="scan layer" id="scan"><span>Hub height <b id="hh">0</b> m</span></div>
+
+      <div class="rotor layer" id="rotor">
+        <div class="arm"><img src="assets/blade.png" alt=""></div>
+        <div class="arm"><img src="assets/blade.png" alt=""></div>
+        <div class="arm"><img src="assets/blade.png" alt=""></div>
+      </div>
+
+      <svg class="hub layer" viewBox="0 0 1333 2000">
+        <defs>
+          <radialGradient id="spin" cx="38%" cy="32%" r="75%">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset=".55" stop-color="#eef0ed"/>
+            <stop offset="1" stop-color="#aeb5b1"/>
+          </radialGradient>
+        </defs>
+        <circle class="ring r1" cx="590" cy="525" r="64"/>
+        <circle class="ring r2" cx="590" cy="525" r="64"/>
+        <circle class="ring r3" cx="590" cy="525" r="64"/>
+        <circle cx="590" cy="525" r="64" fill="url(#spin)" stroke="rgba(15,27,28,.35)" stroke-width="1.6"/>
+        <path d="M545 505 Q590 470 640 500" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+        <circle cx="590" cy="525" r="8" fill="#0f1b1c"/>
+        <circle cx="590" cy="525" r="3" fill="var(--signal)"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="wind" id="wind"></div>
+  <div id="fakecursor"></div>
+
+  <div class="copy">
+    <h1>
+      <span class="ln"><span class="w" style="--i:0">Own</span> <span class="w" style="--i:1">part</span> <span class="w" style="--i:2">of</span> <span class="w" style="--i:3">the</span></span>
+      <span class="ln"><span class="w" style="--i:4"><em>wind</em></span> <span class="w" style="--i:5">we</span> <span class="w" style="--i:6">harness</span></span>
+      <span class="ln"><span class="w" style="--i:7">across</span> <span class="w" style="--i:8">Europe</span></span>
+    </h1>
+    <p class="sub">We build onshore wind farms and open registered shares in each one to qualified investors, from €250.</p>
+    <div class="btns">
+      <a class="btn solid" href="#"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><circle cx="6" cy="6" r="1" fill="currentColor"/><path d="M6 5V.8M6.9 6.6l3.7 2.1M5.1 6.6L1.4 8.7"/></svg>Explore farms</a>
+      <a class="btn" href="#">Book an intro call</a>
+    </div>
+    <div class="stats">
+      <div><b data-to="14">14</b><span>farms live</span></div>
+      <div><b data-to="612" data-unit=" MW">612 MW</b><span>installed</span></div>
+      <div><b data-to="9400">9,400</b><span>shareholders</span></div>
+    </div>
+    <p class="note">A concept by Simply by Daniel. Vindra is a made-up brand and the numbers are placeholders.</p>
+  </div>
+
+  <div class="live" aria-live="off">
+    <div class="card">
+      <div class="row"><i></i>Live rotor<span class="sep"></span><span><b id="rpm">0.0</b> rpm</span><span class="sep"></span><span><b id="mw">0.0</b> MW</span></div>
+      <div class="energy">
+        <span class="lbl">Clean energy generated</span>
+        <div class="val"><b id="kwh">0</b><u>kWh</u></div>
+        <div class="meter"><i id="meter"></i></div>
+        <div class="co2"><span>CO&#8322; avoided</span><b id="co2">0 kg</b></div>
+      </div>
+    </div>
+    <small>Spin it faster with your cursor &middot; output follows rotor speed (simulated)</small>
+  </div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const rotor = $('rotor'), towerWrap = $('towerWrap'), scan = $('scan'), hh = $('hh'), wind = $('wind');
+  const scene = document.querySelector('.scene'), clouds = document.querySelector('.clouds');
+  const plate = document.querySelector('.plate');
+  const blades = [...document.querySelectorAll('.arm img')];
+  const rpmEl = $('rpm'), mwEl = $('mw'), kwhEl = $('kwh'), co2El = $('co2'), meter = $('meter');
+  const Q = new URLSearchParams(location.search).get('t');
+  const REC = Q === 'rec';                       // ?t=rec: frame-by-frame capture mode (window.__step)
+  const FREEZE = REC ? null : Q;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- timeline (seconds) ----
+  const BUILD = [0.3, 3.3];             // tower rises out of the ground, wireframe resolving into the photo
+  const LAND  = [4.2, 4.45, 4.7];       // each blade locks onto the hub (matches the CSS shock rings)
+  const FLY   = 1.0;                    // flight time of a blade
+  const SPIN  = 4.7;                    // rotor starts turning up
+  const BASE = reduce ? 18 : 72, MAX = 420;
+  const TOP = 24.7;                     // tower top, % of plate height
+  const AXIS = [-0.1425, 0.9898];       // blade axis in the photo (pointing down)
+  const MW_PER_RPM = 0.2;               // 12 rpm idle = 2.4 MW, 70 rpm flat out = 14 MW
+  const KWH_PER_SEC = 0.06;             // simulated: 1 real second = 3.6 minutes of output
+  const CO2_KG_PER_KWH = 0.4;           // grid average displaced
+
+  const easeO  = t => 1 - Math.pow(1 - t, 3);
+  const smooth = t => t * t * (3 - 2 * t);
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+  // wind streaks
+  for (let i = 0; i < 9; i++) {
+    const el = document.createElement('i'); el.className = 'streak';
+    el.style.cssText = `top:${8 + Math.random() * 82}%;--w:${18 + Math.random() * 26}vw;--dur:${2.4 + Math.random() * 2.6}s;--delay:${-Math.random() * 5}s`;
+    wind.appendChild(el);
+  }
+
+  // pointer: push the rotor + parallax
+  let v = 0, px = 0, py = 0, tx = 0, ty = 0, lx = null, ly = null;
+  const push = d => { if (!reduce) v = Math.min(MAX, v + d); };
+  const onMove = (x, y) => {
+    if (lx !== null) push(clamp(Math.hypot(x - lx, y - ly), 0, 60) * 0.3);
+    lx = x; ly = y;
+    tx = x / innerWidth - .5; ty = y / innerHeight - .5;
+  };
+  addEventListener('pointermove', e => onMove(e.clientX, e.clientY), { passive: true });
+  addEventListener('wheel', e => push(clamp(Math.abs(e.deltaY), 0, 120) * 0.25), { passive: true });
+
+  // stat count-ups
+  const stats = [...document.querySelectorAll('.stats b')];
+  const fmt = (el, n) => { el.textContent = Math.round(n).toLocaleString('en-US') + (el.dataset.unit || ''); };
+
+  let ang = 0, prev = 0, t0 = null, lastText = 0, lastBlur = -1, kwh = 0;
+  function frame(now) {
+    if (t0 === null) { t0 = now; prev = now; }
+    const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+    const age = FREEZE !== null ? +FREEZE : reduce ? 99 : (now - t0) / 1000;   // ?t=2.5 freezes the intro at that second
+
+    // tower rises: whole object slides up, its roof a wireframe band that resolves into the photo
+    const p = easeO(clamp((age - BUILD[0]) / (BUILD[1] - BUILD[0]), 0, 1));
+    towerWrap.style.transform = 'translateY(' + ((1 - p) * 100).toFixed(2) + '%)';
+    const settle = smooth(clamp((age - BUILD[1]) / 1.1, 0, 1));
+    towerWrap.style.setProperty('--b', (11 - 20 * settle).toFixed(2) + '%');
+    scan.style.top = (TOP + (100 - TOP) * (1 - p)) + '%';
+    scan.style.opacity = age < BUILD[0] ? 0 : clamp(1 - (age - BUILD[1]) / 0.6, 0, 1);
+    hh.textContent = Math.round(p * 120);
+
+    // blades fly in, spinning, and lock onto the hub
+    blades.forEach((img, i) => {
+      const k = clamp((age - (LAND[i] - FLY)) / FLY, 0, 1), e = easeO(k);
+      const d = (1 - e) * 1500 * (plate.clientHeight / 2000);               // px along the blade axis
+      img.style.opacity = clamp(k * 5, 0, 1);
+      img.style.transformOrigin = '44.26% 26.25%';
+      img.style.transform = 'translate(' + (AXIS[0] * d).toFixed(1) + 'px,' + (AXIS[1] * d).toFixed(1) + 'px) rotate(' + ((1 - e) * -420).toFixed(1) + 'deg)';
+    });
+
+    // rotor speed
+    if (age > SPIN) {
+      const k = clamp((age - SPIN) / 3.2, 0, 1);
+      v += (BASE * k * k * (3 - 2 * k) - v) * (1 - Math.exp(-dt / 1.5));
+    }
+    ang = (ang + v * dt) % 360;
+    rotor.style.transform = 'rotate(' + ang.toFixed(2) + 'deg)';
+    const rpm = v / 6;
+    const mw = rpm * MW_PER_RPM;                                           // output is proportional to rotor speed
+
+    // clean energy generated: integrates output while the rotor turns
+    kwh += mw * 1000 * KWH_PER_SEC * dt;
+
+    // motion blur + wind strength follow rpm
+    const blur = clamp((rpm - 24) / 22, 0, 2);
+    if (Math.abs(blur - lastBlur) > 0.05) { rotor.style.filter = blur > 0.05 ? 'blur(' + blur.toFixed(2) + 'px)' : 'none'; lastBlur = blur; }
+    wind.style.opacity = age < SPIN ? 0 : clamp(0.25 + (rpm - 10) / 40, 0.25, 1) * clamp((age - SPIN) / 1.5, 0, 1);
+
+    // depth: scene and clouds drift against each other with the cursor
+    px += (tx - px) * Math.min(1, dt * 3); py += (ty - py) * Math.min(1, dt * 3);
+    if (!reduce) {
+      scene.style.translate = (px * -14).toFixed(1) + 'px ' + (py * -8).toFixed(1) + 'px';
+      clouds.style.translate = (px * 38).toFixed(1) + 'px ' + (py * 14).toFixed(1) + 'px';
+    }
+
+    // counters
+    const c = easeO(clamp((age - 3.3) / 1.6, 0, 1));
+    stats.forEach(b => fmt(b, +b.dataset.to * c));
+
+    kwhEl.textContent = Math.floor(kwh).toLocaleString('en-US');
+    meter.style.transform = 'scaleX(' + clamp(rpm / (MAX / 6), 0, 1).toFixed(3) + ')';
+    if (now - lastText > 100) {
+      lastText = now;
+      rpmEl.textContent = rpm.toFixed(1);
+      mwEl.textContent = mw.toFixed(1);
+      const co2 = kwh * CO2_KG_PER_KWH;
+      co2El.textContent = co2 >= 1000 ? (co2 / 1000).toFixed(2) + ' t' : Math.round(co2) + ' kg';
+    }
+    if (!REC) requestAnimationFrame(frame);
+  }
+  if (REC) {
+    const fake = document.getElementById('fakecursor');
+    window.__step = (t, x, y) => {                // seek every CSS animation + the script clock to t seconds
+      document.getAnimations().forEach(a => { a.pause(); a.currentTime = t * 1000; });
+      if (x == null) { fake.style.opacity = 0; lx = null; }
+      else { fake.style.opacity = 1; fake.style.transform = 'translate(' + x + 'px,' + y + 'px)'; onMove(x, y); }
+      frame(t * 1000);
+    };
+    t0 = 0; prev = 0;
+  } else requestAnimationFrame(frame);
+})();
+
+</script>
+</body>
+</html>

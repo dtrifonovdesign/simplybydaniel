@@ -26,4 +26,12 @@ export const CONCEPTS = [
     href: './concepts/craigslist/',
     hrefLabel: 'Open the interactive page ↗',
   },
+  {
+    title: 'Vindra',
+    note: 'A concept by Simply for a made-up wind energy brand. The tower builds itself, the blades lock on and spin, and the clean energy counter follows the rotor. Move your cursor to spin it faster.',
+    type: 'page',
+    src: './concepts/vindra/',
+    href: './concepts/vindra/',
+    hrefLabel: 'Launch the full animation ↗',
+  },
 ];

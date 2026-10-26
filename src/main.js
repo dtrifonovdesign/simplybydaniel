@@ -247,7 +247,7 @@ requestAnimationFrame(frame);
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener('click', (e) => {
     const id = a.getAttribute('href');
-    if (id.length < 2) return;
+    if (id.length < 2 || id[0] !== '#') return;        // the gallery's launch link starts as "#" and is pointed at a page later
     const el = document.querySelector(id);
     if (!el) return;
     e.preventDefault();
