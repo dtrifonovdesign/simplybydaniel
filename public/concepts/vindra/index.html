@@ -36,7 +36,7 @@
   nav .pill { color: var(--ink); border: 1px solid var(--ink); padding: 7px 12px; }
 
   /* ---------- layout ---------- */
-  .hero { position: relative; height: 100vh; min-height: 560px; overflow-x: clip; }
+  .hero { position: relative; height: 100vh; min-height: 560px; overflow: clip; }
   .scene { position: absolute; left: 0; top: 0; width: 50%; height: 100%; z-index: 1; clip-path: inset(-60vh -60vw 0 -60vw); transform-origin: 50% 100%; animation: settle 4.2s cubic-bezier(.2,.7,.2,1) both; }
 
   /* everything inside .plate shares the photo's 1333 x 2000 coordinate space */
@@ -112,7 +112,6 @@
 
   .stats { display: flex; gap: 28px; margin-top: 34px; padding-top: 18px; border-top: 1px solid rgba(15,27,28,.14);
            opacity: 0; animation: fade .8s ease 3.1s forwards; }
-  .note { margin-top: 18px; font-size: 10.5px; line-height: 1.5; color: var(--muted); opacity: 0; animation: fade .8s ease 3.3s forwards; }
   .stats b { display: block; font-weight: 400; font-size: 20px; letter-spacing: -.02em; }
   .stats span { font-size: 10.5px; color: var(--muted); }
 
@@ -133,6 +132,16 @@
   .meter i { display: block; width: 100%; height: 100%; background: var(--signal); transform-origin: 0 50%; transform: scaleX(0); border-radius: 0; animation: none; }
   .energy .co2 { display: flex; justify-content: space-between; margin-top: 10px; font-size: 10.5px; }
   .live small { display: block; margin-top: 8px; font-size: 10px; text-align: right; }
+
+  @media (min-width: 801px) and (max-height: 720px) {
+    .live .hint, .energy .co2 { display: none; }
+    .energy { padding-bottom: 10px; }
+    .meter { margin-top: 10px; }
+  }
+  @media (min-width: 801px) and (max-height: 600px) { html { overflow-y: auto; } body { overflow: visible; } }   /* shorter than the hero: let it scroll */
+  @media (min-width: 801px) and (max-height: 680px) {
+    .stats { display: none; }          /* short screens: the text column gives up its stats row so the card never meets it */
+  }
 
   @keyframes word  { to { transform: none; filter: blur(0); opacity: 1; } }
   @keyframes shock { 0% { opacity: .9; transform: scale(.9); } 100% { opacity: 0; transform: scale(7); } }
@@ -249,7 +258,6 @@
       <div><b data-to="612" data-unit=" MW">612 MW</b><span>installed</span></div>
       <div><b data-to="9400">9,400</b><span>shareholders</span></div>
     </div>
-    <p class="note">A concept by Simply by Daniel. Vindra is a made-up brand and the numbers are placeholders.</p>
   </div>
 
   <div class="live" aria-live="off">
@@ -262,7 +270,8 @@
         <div class="co2"><span>CO&#8322; avoided</span><b id="co2">0 kg</b></div>
       </div>
     </div>
-    <small>Spin it faster with your cursor &middot; output follows rotor speed (simulated)</small>
+    <small class="hint">Spin it faster with your cursor &middot; output follows rotor speed (simulated)</small>
+    <small class="disc">A concept by Simply by Daniel. Vindra is a made-up brand and the numbers are placeholders.</small>
   </div>
 </main>
 
