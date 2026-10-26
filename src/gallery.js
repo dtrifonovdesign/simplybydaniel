@@ -72,6 +72,23 @@ export function initGallery({ getLenis, reduced, getCursor }) {
   }
 
   opener.addEventListener('click', () => open(0));
+
+  // A link like /?skip&gallery=vindra reopens the gallery on that design (the concept pages' "Back to concepts" button uses it).
+  const want = new URLSearchParams(location.search).get('gallery');
+  if (want !== null) {
+    const idx = Math.max(0, CONCEPTS.findIndex((c) => (c.src || '').includes('/' + want + '/')));
+    const t0 = performance.now();
+    const wait = setInterval(() => {                                   // wait for the intro to finish, give up after 12s
+      const loading = document.body.classList.contains('is-loading');
+      if (loading && performance.now() - t0 < 12000) return;
+      clearInterval(wait);
+      const section = document.getElementById('concepts-h');
+      const lenis = getLenis();
+      if (section) { if (lenis) lenis.scrollTo(section, { immediate: true, offset: -120 }); else section.scrollIntoView({ block: 'center' }); }
+      history.replaceState(null, '', location.pathname);
+      open(idx);
+    }, 150);
+  }
   prev.addEventListener('click', () => show(i - 1, -1));
   next.addEventListener('click', () => show(i + 1, 1));
   dots.addEventListener('click', (e) => { const b = e.target.closest('.gallery__dot'); if (b) show(+b.dataset.k, +b.dataset.k > i ? 1 : -1); });

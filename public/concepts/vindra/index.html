@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>try { if (window.top !== window.self) document.documentElement.classList.add("embedded"); } catch (e) { document.documentElement.classList.add("embedded"); }</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vindra wind energy concept | Simply by Daniel</title>
 <meta name="robots" content="noindex, follow">
@@ -28,6 +29,14 @@
     padding: 22px 40px; font-size: 12px;
     opacity: 0; animation: fade .8s ease 2.2s forwards;
   }
+  .navleft { display: flex; align-items: center; gap: 18px; }
+  .back { display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--ink); text-decoration: none;
+          border: 1px solid rgba(15,27,28,.28); padding: 7px 12px 7px 10px;
+          transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease; }
+  .back svg { width: 12px; height: 12px; transition: transform .2s ease; }
+  .back:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .back:hover svg { transform: translateX(-2px); }
+  .embedded .back { display: none; }
   .logo { display: flex; align-items: center; gap: 9px; font-weight: 500; font-size: 14px; letter-spacing: -.01em; }
   .logo svg { width: 18px; height: 18px; }
   nav ul { display: flex; align-items: center; gap: 28px; list-style: none; padding: 0; color: var(--muted); }
@@ -158,6 +167,8 @@
     body { overflow: auto; }
     nav { padding: 16px 20px; }
     nav ul li:not(:last-child) { display: none; }
+    .back .long { display: none; }
+    .navleft { gap: 12px; }
     .hero { height: auto; min-height: 100vh; padding-bottom: 80px; }
     .scene { position: relative; width: 100%; height: 66vh; }
     .copy { position: relative; left: 0; top: 0; transform: none; width: auto; padding: 8px 20px 24px; }
@@ -172,9 +183,12 @@
 <body>
 
 <nav>
+  <div class="navleft">
+  <a class="back" href="../../?skip&amp;gallery=vindra"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6H1.8M5.2 2.4 1.6 6l3.6 3.6"/></svg><span><span class="long">Back to </span>concepts</span></a>
   <div class="logo">
     <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="9" r="1.6" fill="currentColor" stroke="none"/><path d="M9 7.4V1.2M10.4 9.8l5.4 3.1M7.6 9.8l-5.4 3.1"/></svg>
     Vindra
+  </div>
   </div>
   <ul>
     <li><a href="#">Farms</a></li>
